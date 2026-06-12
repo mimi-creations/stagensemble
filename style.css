@@ -60,11 +60,10 @@ nav { background: var(--gradient-nav); padding: 0 24px; display: flex; align-ite
 }
 
 .nav-logo {
-   height: 32px;
+   height: 42px;
    width: 90px;
    object-fit: contain;
    object-position: center;
-   filter: brightness(0) invert(1);
 }
 
 .nav-brand { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; background: var(--gradient-card); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-right: auto; padding: 8px 0; white-space: nowrap; }

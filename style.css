@@ -51,6 +51,22 @@ body {
  
 /* NAV */
 nav { background: var(--gradient-nav); padding: 0 24px; display: flex; align-items: center; gap: 4px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.4); min-height: 62px; flex-wrap: wrap; }
+.nav-logo-wrapper {
+   display: flex;
+   align-items: center;
+   padding: 6px 0;
+   margin-right: 116px;
+   border-right: 1px solid rgba(255,255,255,0.15);
+   padding-right: 16px;
+}
+
+.nav-logo {
+   height: 38px;
+   width: auto;
+   object-fit: contain;
+   filter: brightness(0) invert(1);
+}
+
 .nav-brand { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; background: var(--gradient-card); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-right: auto; padding: 8px 0; white-space: nowrap; }
 nav a { color: rgba(255,255,255,0.8); text-decoration: none; font-family: var(--font-display); font-weight: 600; font-size: 0.88rem; padding: 7px 14px; border-radius: 50px; transition: background 0.25s, color 0.25s, transform 0.2s; white-space: nowrap; }
 nav a:hover { background: rgba(255,255,255,0.12); color: #fff; transform: translateY(-1px); }

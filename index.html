@@ -40,12 +40,10 @@
     <div id="login-error" class="alert-error" style="display:none;"></div>
  
     <label for="login-id">Identifiant (prenom.nom)</label>
-    <input type="text" id="login-id" placeholder="ex : alice.dupont">
-      <onkeydown="if(event.key==='Enter' doLogin()">
+    <input type="text" id="login-id" placeholder="ex : alice.dupont" onkeydown="if(event.key==='Enter' doLogin()">
  
     <label for="login-pwd">Mot de passe</label>
-    <input type="password" id="login-pwd" placeholder="••••••••">
-      <onkeydown="if(event.key==='Enter') doLogin()">
+    <input type="password" id="login-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
  
     <button onclick="doLogin()">Se connecter</button>
     <div class="auth-link">
@@ -67,32 +65,25 @@
     <div id="inscription-error" class="alert-error" style="display:none;"></div>
  
     <label>Prénom *</label>
-    <input type="text" id="reg-prenom" placeholder="Alice">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="text" id="reg-prenom" placeholder="Alice" onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>Nom *</label>
-    <input type="text" id="reg-nom" placeholder="Dupont">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="text" id="reg-nom" placeholder="Dupont" onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>Adresse Email *</label>
-    <input type="email" id="reg-email" placeholder="alice.dupont@entreprise.com">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="email" id="reg-email" placeholder="alice.dupont@entreprise.com" onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>Mot de passe *</label>
-    <input type="password" id="reg-pwd" placeholder="••••••••">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="password" id="reg-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>École / Université</label>
-    <input type="text" id="reg-ecole" placeholder="ex : ISCAE, EMI, HEM...">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="text" id="reg-ecole" placeholder="ex : ISCAE, EMI, HEM..." onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>Année de stage</label>
-    <input type="text" id="reg-annee" placeholder="ex : 2024">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="text" id="reg-annee" placeholder="ex : 2024" onkeydown="if(event.key==='Enter') doInscription()">
  
     <label>Durée du stage</label>
-    <input type="text" id="reg-duree" placeholder="ex : 6 mois">
-      <onkeydown="if(event.key==='Enter') doInscription()">
+    <input type="text" id="reg-duree" placeholder="ex : 6 mois" onkeydown="if(event.key==='Enter') doInscription()">
  
     <button onclick="doInscription()">Créer mon compte</button>
     <div class="auth-link">

@@ -39,16 +39,14 @@
       <div id="login-error" class="alert alert-error" style="display: none; padding: 12px; margin-bottom: 15px; background: #fee2e2; color: #c53030; border-radius: 10px;"></div>
       <div id="login-success" class="alert alert-success" style="display: none; padding: 12px; margin-bottom: 15px; background: #ecfdf5; color: #065f46; border-radius: 10px;"></div>
       
-      <!-- Remplacement du mécanisme onsubmit par un bouton standard avec id -->
       <form onsubmit="return false;">
         <label>Identifiant (prenom.nom)</label>
-        <input type="text" id="login-username" placeholder="ex: alice.dupont" required>
+        <input type="text" id="login-username" placeholder="ex: admin.stagiaire" required>
         
         <label>Mot de passe</label>
-        <input type="password" id="login-password" required>
+        <input type="password" id="login-password" placeholder="motdepasse123" required>
         
-        <!-- Ajout d'un ID et d'un onclick direct pour forcer l'action -->
-        <button type="button" id="btn-soumettre-login" onclick="doLogin()">Se connecter</button>
+        <button type="button" id="btn-soumettre-login" onclick="doLogin(); return false;">Se connecter</button>
       </form>
       <div class="auth-link">
         Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
@@ -312,6 +310,7 @@ function initDemoData() {
 
 // ── Navigation ────────────────────────────────
 function showPage(page) {
+  console.log('Navigating to:', page);
   const pages = ['login','inscription','accueil','annuaire','chat','messagerie','ressources'];
   pages.forEach(p => {
     const el = document.getElementById('page-' + p);
@@ -326,7 +325,6 @@ function showPage(page) {
   } else {
     if (!currentUser) { showPage('login'); return; }
     nav.style.display = 'flex';
-    // Mettre à jour le lien actif
     document.querySelectorAll('nav a[id^="nav-"]').forEach(a => a.classList.remove('active'));
     const activeLink = document.getElementById('nav-' + page);
     if (activeLink) activeLink.classList.add('active');
@@ -336,11 +334,9 @@ function showPage(page) {
   const flexPages = ['messagerie', 'login', 'inscription'];
   if (target) target.style.display = flexPages.includes(page) ? 'flex' : 'block';
 
-  // Arrêter les anciens intervals
   clearInterval(chatInterval);
   clearInterval(privateInterval);
 
-  // Charger les données de la page
   if (page === 'accueil')    loadAccueil();
   if (page === 'annuaire')   loadAnnuaire();
   if (page === 'chat')       { loadChat(); chatInterval = setInterval(loadChat, 4000); }
@@ -348,33 +344,55 @@ function showPage(page) {
     loadMessagerie();
     const badge = document.getElementById('badge-mp');
     if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
-}
+  }
   if (page === 'ressources') loadRessources();
 }
 
 // ── Login ─────────────────────────────────────
 function doLogin() {
-  const identifiant = document.getElementById('login-username').value.trim();
-  const pwd = document.getElementById('login-password').value;
+  console.log('doLogin called');
+  const username = document.getElementById('login-username');
+  const password = document.getElementById('login-password');
+  
+  console.log('Username element:', username);
+  console.log('Password element:', password);
+  
+  const identifiant = username ? username.value.trim() : '';
+  const pwd = password ? password.value : '';
   const errDiv = document.getElementById('login-error');
-  errDiv.style.display = 'none';
+  
+  console.log('Identifiant:', identifiant);
+  console.log('Password:', pwd);
+  
+  if (errDiv) errDiv.style.display = 'none';
 
   if (!identifiant || !pwd) {
-    errDiv.textContent = '⚠️ Veuillez remplir tous les champs.';
-    errDiv.style.display = 'block'; return;
+    if (errDiv) {
+      errDiv.textContent = '⚠️ Veuillez remplir tous les champs.';
+      errDiv.style.display = 'block';
+    }
+    return;
   }
+  
   if (!identifiant.includes('.')) {
-    errDiv.textContent = '⚠️ L\'identifiant doit être au format prenom.nom (ex: alice.dupont)';
-    errDiv.style.display = 'block'; return;
+    if (errDiv) {
+      errDiv.textContent = '⚠️ L\'identifiant doit être au format prenom.nom (ex: alice.dupont)';
+      errDiv.style.display = 'block';
+    }
+    return;
   }
 
   const [prenom, nom] = identifiant.split('.');
   const stagiaires = getDB('stagiaires');
+  console.log('Stagiaires:', stagiaires);
+  
   const user = stagiaires.find(s =>
     s.prenom.toLowerCase() === prenom.toLowerCase() &&
     s.nom.toLowerCase() === nom.toLowerCase() &&
     s.motdepasse === pwd
   );
+
+  console.log('User found:', user);
 
   if (user) {
     currentUser = user.prenom;
@@ -384,8 +402,10 @@ function doLogin() {
     demanderPermissionNotif();
     setInterval(verifierNouveauxMessages, 5000);
   } else {
-    errDiv.textContent = '⚠️ Identifiant ou mot de passe incorrect.';
-    errDiv.style.display = 'block';
+    if (errDiv) {
+      errDiv.textContent = '⚠️ Identifiant ou mot de passe incorrect.';
+      errDiv.style.display = 'block';
+    }
   }
 }
 
@@ -399,25 +419,35 @@ function doInscription() {
   const annee  = document.getElementById('reg-annee').value.trim();
   const duree  = document.getElementById('reg-duree').value.trim();
   const errDiv = document.getElementById('inscription-error');
-  errDiv.style.display = 'none';
+  if (errDiv) errDiv.style.display = 'none';
 
   if (!prenom || !nom || !email || !pwd) {
-    errDiv.textContent = '⚠️ Veuillez remplir tous les champs obligatoires (*).';
-    errDiv.style.display = 'block'; return;
+    if (errDiv) {
+      errDiv.textContent = '⚠️ Veuillez remplir tous les champs obligatoires (*).';
+      errDiv.style.display = 'block';
+    }
+    return;
   }
 
   const stagiaires = getDB('stagiaires');
   if (stagiaires.find(s => s.prenom.toLowerCase() === prenom.toLowerCase() && s.nom.toLowerCase() === nom.toLowerCase())) {
-    errDiv.textContent = '⚠️ Ce nom d\'utilisateur est déjà utilisé.';
-    errDiv.style.display = 'block'; return;
+    if (errDiv) {
+      errDiv.textContent = '⚠️ Ce nom d\'utilisateur est déjà utilisé.';
+      errDiv.style.display = 'block';
+    }
+    return;
   }
 
   const newId = stagiaires.length > 0 ? Math.max(...stagiaires.map(s => s.id)) + 1 : 1;
   stagiaires.push({ id: newId, nom, prenom, email, ecole, annee_stage: annee, duree_stage: duree, motdepasse: pwd });
   setDB('stagiaires', stagiaires);
 
-  document.getElementById('login-success').style.display = 'block';
-  showPage('login');
+  const successDiv = document.getElementById('login-success');
+  if (successDiv) {
+    successDiv.textContent = '✅ Compte créé avec succès ! Connectez-vous maintenant.';
+    successDiv.style.display = 'block';
+  }
+  setTimeout(() => showPage('login'), 1500);
 }
 
 // ── Déconnexion ───────────────────────────────
@@ -481,7 +511,6 @@ function sendChat() {
   setDB('chat', messages);
   input.value = '';
   loadChat();
-  // Scroll
   const box = document.getElementById('chat-box');
   box.scrollTop = box.scrollHeight;
 }
@@ -499,7 +528,7 @@ function loadMessagerie() {
 
   list.innerHTML = stagiaires.map(s => {
     const initiales = (s.prenom[0] || '') + (s.nom[0] || '');
-    return `<a href="#" class="contact-item" onclick="openPrivateChat(${s.id}, '${esc(s.prenom)} ${esc(s.nom)}', '${initiales.toUpperCase()}')" id="contact-${s.id}">
+    return `<a href="#" class="contact-item" onclick="openPrivateChat(${s.id}, '${esc(s.prenom)} ${esc(s.nom)}', '${initiales.toUpperCase()}'); return false;" id="contact-${s.id}">
       <div class="contact-avatar">${initiales.toUpperCase()}</div>
       <div><strong>${esc(s.prenom)} ${esc(s.nom)}</strong><br><small style="color:#999;">${esc(s.ecole || '')}</small></div>
     </a>`;
@@ -606,7 +635,6 @@ function submitRessource() {
   document.getElementById('res-solution').value = '';
 
   loadRessources();
-  // Scroll vers la liste
   document.getElementById('ressources-list').scrollIntoView({ behavior: 'smooth' });
 }
 

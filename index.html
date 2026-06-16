@@ -41,12 +41,12 @@
       
       <form onsubmit="return false;">
         <label>Identifiant (prenom.nom)</label>
-        <input type="text" id="login-username" placeholder="ex: admin.stagiaire" required>
+        <input type="text" id="login-id" placeholder="iman.mch" required>
         
         <label>Mot de passe</label>
-        <input type="password" id="login-password" placeholder="motdepasse123" required>
+        <input type="password" id="login-pwd" placeholder="motdepasse123" required>
         
-        <button type="button" id="btn-soumettre-login" onclick="doLogin(); return false;">Se connecter</button>
+        <button type="button" onclick="doLogin(); return false;">Se connecter</button>
       </form>
       <div class="auth-link">
         Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
@@ -292,16 +292,16 @@ function setDB(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 function initDemoData() {
   if (!localStorage.getItem('stagiaires_init')) {
     setDB('stagiaires', [
-      { id: 1, nom: 'Stagiaire', prenom: 'Admin',  email: 'admin@awb.ma',   ecole: 'IT Africa',                annee_stage: '2026', duree_stage: '6 mois', motdepasse: 'motdepasse123' },
+      { id: 1, nom: 'mch', prenom: 'iman',  email: 'iman@awb.ma',   ecole: 'IT Africa',                annee_stage: '2026', duree_stage: '6 mois', motdepasse: 'motdepasse123' },
       { id: 2, nom: 'Doe',       prenom: 'John',   email: 'j.doe@awb.ma',   ecole: 'Université de Casablanca', annee_stage: '2023', duree_stage: '3 mois', motdepasse: 'alice2024' },
       { id: 3, nom: 'Martin',    prenom: 'Sophie', email: 's.martin@awb.ma', ecole: 'ISCAE Casablanca',         annee_stage: '2024', duree_stage: '6 mois', motdepasse: 'sophie2024' },
     ]);
     setDB('chat', [
-      { id: 1, pseudo: 'Admin', message: 'Bienvenue sur StagEnsemble ! 🎉', date_envoi: new Date().toISOString() },
+      { id: 1, pseudo: 'iman', message: 'Bienvenue sur StagEnsemble ! 🎉', date_envoi: new Date().toISOString() },
       { id: 2, pseudo: 'John',  message: 'Salut tout le monde !', date_envoi: new Date().toISOString() },
     ]);
     setDB('ressources', [
-      { id: 1, titre: 'Tableau de bord Power BI', sujet: 'Création d\'un dashboard des ventes', probleme_rencontre: 'Import des données Excel problématique', solution_utilisee: 'Utilisation de Power Query', auteur: 'Admin', date_publication: '2026-01-01' }
+      { id: 1, titre: 'Tableau de bord Power BI', sujet: 'Création d\'un dashboard des ventes', probleme_rencontre: 'Import des données Excel problématique', solution_utilisee: 'Utilisation de Power Query', auteur: 'iman', date_publication: '2026-01-01' }
     ]);
     setDB('messages_prives', []);
     localStorage.setItem('stagiaires_init', '1');
@@ -310,7 +310,6 @@ function initDemoData() {
 
 // ── Navigation ────────────────────────────────
 function showPage(page) {
-  console.log('Navigating to:', page);
   const pages = ['login','inscription','accueil','annuaire','chat','messagerie','ressources'];
   pages.forEach(p => {
     const el = document.getElementById('page-' + p);
@@ -350,20 +349,9 @@ function showPage(page) {
 
 // ── Login ─────────────────────────────────────
 function doLogin() {
-  console.log('doLogin called');
-  const username = document.getElementById('login-username');
-  const password = document.getElementById('login-password');
-  
-  console.log('Username element:', username);
-  console.log('Password element:', password);
-  
-  const identifiant = username ? username.value.trim() : '';
-  const pwd = password ? password.value : '';
+  const identifiant = document.getElementById('login-id').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
   const errDiv = document.getElementById('login-error');
-  
-  console.log('Identifiant:', identifiant);
-  console.log('Password:', pwd);
-  
   if (errDiv) errDiv.style.display = 'none';
 
   if (!identifiant || !pwd) {
@@ -373,10 +361,10 @@ function doLogin() {
     }
     return;
   }
-  
+
   if (!identifiant.includes('.')) {
     if (errDiv) {
-      errDiv.textContent = '⚠️ L\'identifiant doit être au format prenom.nom (ex: alice.dupont)';
+      errDiv.textContent = '⚠️ L\'identifiant doit être au format prenom.nom (ex: iman.mch)';
       errDiv.style.display = 'block';
     }
     return;
@@ -384,15 +372,11 @@ function doLogin() {
 
   const [prenom, nom] = identifiant.split('.');
   const stagiaires = getDB('stagiaires');
-  console.log('Stagiaires:', stagiaires);
-  
   const user = stagiaires.find(s =>
     s.prenom.toLowerCase() === prenom.toLowerCase() &&
     s.nom.toLowerCase() === nom.toLowerCase() &&
     s.motdepasse === pwd
   );
-
-  console.log('User found:', user);
 
   if (user) {
     currentUser = user.prenom;

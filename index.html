@@ -336,7 +336,8 @@ function showPage(page) {
   if (page === 'messagerie') {
     loadMessagerie();
     const badge = document.getElementById('badge-mp');
-    if (badge) { badge;style.display = 'none'; badge.textContent = '0';}
+    if (badge) { badge.style.display = 'none'; badge.textContent = '0'; }
+}
   if (page === 'ressources') loadRessources();
 }
 
@@ -605,10 +606,43 @@ function esc(str) {
 }
 
 // ── Notifications ────────────────────────────
-function demanderPermissionNotif() { ... }
-function afficherNotif(texte) { ... }
-let dernierMsgId = 0;
-function verifierNouveauMessages() { ... }
+function demanderPermissionNotif() { 
+  if ('Notification' in window && Notification.permission == 'default') {
+    Notification.requestPermission();
+  }
+}
+  
+function afficherNotif(texte) { 
+ const toast = document.getElementById('toast-notif');
+  document.getElementById('toast-text').textContent = texte;
+  toast.style.display = 'block';
+  setTimeout(() => toast.style.display = 'none', 4000);
+  if ('Notification' in window && Notification.permission == 'granted') {
+    new Notification('StagEnsemble', { body: texte, icon: 'logo-attijari.png' });
+  }
+}
+  
+function verifierNouveauMessages() { 
+  if (!currentUserId) return;
+  const badge = document.getElementById('badge-mp');
+  if (!badge) return;
+  const all = getDB('messages_prives');
+  const mesMessages = all.filter(m => m.destinataire_id == currentUserId);
+  const nouveaux = mesMessages.filter (m => m.id > dernierMsgId);
+  if (nouveaux.length > 0 {
+    badge.textContent = nouveaux.length;
+    badge.style.display = 'inlin';
+    const dernier = nouveaux[nouveaux.length - 1];
+    const stagiares  = getDB('stagiares');
+    const expediteur = stagiares.find(s => s.id == dernier.expediteur_id);
+    const nomExp = expediteur ? expediteur.prenom : 'Quelq\'un';
+    const pageActive = document.querySelector('#page-messagerie');
+    if (pageActive && pageActive.styLe.display == 'none') {
+      afficherNotif('${nomExp} vous a envoyé un message');
+    }
+    dernierMsgId = Math.max(...mesMessages.map(m => m.id));
+  }
+}
   if (!currentUserId) return;
   const badge = document.getElementById(!badge-mp');
   if (!badge) return;

@@ -333,7 +333,10 @@ function showPage(page) {
   if (page === 'accueil')    loadAccueil();
   if (page === 'annuaire')   loadAnnuaire();
   if (page === 'chat')       { loadChat(); chatInterval = setInterval(loadChat, 4000); }
-  if (page === 'messagerie') loadMessagerie();
+  if (page === 'messagerie') {
+    loadMessagerie();
+    const badge = document.getElementById('badge-mp');
+    if (badge) { badge;style.display = 'none'; badge.textContent = '0';}
   if (page === 'ressources') loadRessources();
 }
 
@@ -366,6 +369,8 @@ function doLogin() {
     currentUserId = user.id;
     document.getElementById('welcome-name').textContent = user.prenom;
     showPage('accueil');
+    demanderPermissionNotif();
+    setInterval(verifierNouveauxMessages, 5000);
   } else {
     errDiv.textContent = '⚠️ Identifiant ou mot de passe incorrect.';
     errDiv.style.display = 'block';
@@ -598,6 +603,12 @@ function esc(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Notifications ────────────────────────────
+function demanderPermissionNotif() { ... }
+function afficherNotif(texte) { ... }
+let dernierMsgId = 0;
+function verifierNouveauMessages() { ... }
 
 // ── Initialisation ────────────────────────────
 initDemoData();

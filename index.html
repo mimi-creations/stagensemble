@@ -19,7 +19,11 @@
   <a href="#" onclick="showPage('accueil')" id="nav-accueil">Accueil</a>
   <a href="#" onclick="showPage('annuaire')" id="nav-annuaire">Annuaire</a>
   <a href="#" onclick="showPage('chat')" id="nav-chat">Chat entre Stagiaires</a>
-  <a href="#" onclick="showPage('messagerie')" id="nav-messagerie">Chat Privé</a>
+  <a href="#" onclick="showPage('messagerie')" id="nav-messagerie">
+  Chat Privé <span id="badge-mp" style="display:none; background:#e63946; color:white; 
+  border-radius:50%; padding:1px 7px; font-size:0.75rem; margin-left:4px;">0</span>
+</a>
+
   <a href="#" onclick="showPage('ressources')" id="nav-ressources">Ressources</a>
   <a href="#" onclick="deconnexion()" class="nav-logout">Déconnexion</a>
 </nav>
@@ -599,6 +603,15 @@ function esc(str) {
 initDemoData();
 showPage('login');
 </script>
+
+  <div id="toast-notif" style="
+    display:none; position:fixed; bottom:24px; right:24px;
+    background:#1e1e2e; color:white; padding:14px 20px;
+    border-radius:12px; font-size:0.9rem; z-index:9999;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3); max-width:280px;
+    border-left: 4px solid #c8922a;">
+    💬 <span id="toast-text">Nouveau message</span>
+  </div>
 
 </body>
 </html>

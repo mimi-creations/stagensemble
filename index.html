@@ -29,33 +29,34 @@
 </nav>
 
 <!-- =============================================
-       PAGE 1 : CONNEXION (LOGIN) — VERSION CORRIGÉE
-       ============================================= -->
-  <div id="page-login" class="container active">
-    <div class="auth-wrapper">
-      <div class="auth-card">
-        <h2>Connexion</h2>
-        <!-- Ces blocs d'alertes doivent être visibles si besoin -->
-        <div id="login-error" class="alert alert-error" style="display: none; padding: 12px; margin-bottom: 15px; background: #fee2e2; color: #c53030; border-radius: 10px;"></div>
-        <div id="login-success" class="alert alert-success" style="display: none; padding: 12px; margin-bottom: 15px; background: #ecfdf5; color: #065f46; border-radius: 10px;"></div>
+     PAGE 1 : CONNEXION (LOGIN)
+     ============================================= -->
+<div id="page-login" class="container active">
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h2>Connexion</h2>
+      <!-- Ces blocs d'alertes doivent être visibles si besoin -->
+      <div id="login-error" class="alert alert-error" style="display: none; padding: 12px; margin-bottom: 15px; background: #fee2e2; color: #c53030; border-radius: 10px;"></div>
+      <div id="login-success" class="alert alert-success" style="display: none; padding: 12px; margin-bottom: 15px; background: #ecfdf5; color: #065f46; border-radius: 10px;"></div>
+      
+      <!-- Remplacement du mécanisme onsubmit par un bouton standard avec id -->
+      <form onsubmit="return false;">
+        <label>Identifiant (prenom.nom)</label>
+        <input type="text" id="login-username" placeholder="ex: alice.dupont" required>
         
-        <!-- Remplacement du mécanisme onsubmit par un bouton standard avec id -->
-        <form onsubmit="return false;">
-          <label>Identifiant (prenom.nom)</label>
-          <input type="text" id="login-username" placeholder="ex: alice.dupont" required>
-          
-          <label>Mot de passe</label>
-          <input type="password" id="login-password" required>
-          
-          <!-- Ajout d'un ID et d'un onclick direct pour forcer l'action -->
-          <button type="button" id="btn-soumettre-login" onclick="doLogin()">Se connecter</button>
-        </form>
-        <div class="auth-link">
-          Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
-        </div>
+        <label>Mot de passe</label>
+        <input type="password" id="login-password" required>
+        
+        <!-- Ajout d'un ID et d'un onclick direct pour forcer l'action -->
+        <button type="button" id="btn-soumettre-login" onclick="doLogin()">Se connecter</button>
+      </form>
+      <div class="auth-link">
+        Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
       </div>
     </div>
   </div>
+</div>
+
 <!-- =============================================
      PAGE : INSCRIPTION
      ============================================= -->
@@ -261,6 +262,15 @@
   </div>
 </div>
 
+<!-- Toast notification -->
+<div id="toast-notif" style="
+    display:none; position:fixed; bottom:24px; right:24px;
+    background:#1e1e2e; color:white; padding:14px 20px;
+    border-radius:12px; font-size:0.9rem; z-index:9999;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3); max-width:280px;
+    border-left: 4px solid #c8922a;">
+    💬 <span id="toast-text">Nouveau message</span>
+</div>
 
 <!-- =============================================
      JAVASCRIPT — Simulation SPA
@@ -272,6 +282,7 @@ let currentUserId = null;
 let privateDestId = null;
 let chatInterval = null;
 let privateInterval = null;
+let lastMsgId = 0;
 
 // ── Base de données locale (localStorage) ─────
 function getDB(key) {
@@ -292,7 +303,7 @@ function initDemoData() {
       { id: 2, pseudo: 'John',  message: 'Salut tout le monde !', date_envoi: new Date().toISOString() },
     ]);
     setDB('ressources', [
-      { id: 1, titre: 'Tableau de bord Power BI', sujet: 'Création d\'un dashboard des ventes', probleme_rencontre: 'Import des données Excel problématique', solution_utilisee: 'Utilisation de Power Query pour nettoyer les données', auteur: 'Admin', date_publication: '2026-01-10' },
+      { id: 1, titre: 'Tableau de bord Power BI', sujet: 'Création d\'un dashboard des ventes', probleme_rencontre: 'Import des données Excel problématique', solution_utilisee: 'Utilisation de Power Query', auteur: 'Admin', date_publication: '2026-01-01' }
     ]);
     setDB('messages_prives', []);
     localStorage.setItem('stagiaires_init', '1');
@@ -613,7 +624,7 @@ function demanderPermissionNotif() {
 }
   
 function afficherNotif(texte) { 
- const toast = document.getElementById('toast-notif');
+  const toast = document.getElementById('toast-notif');
   document.getElementById('toast-text').textContent = texte;
   toast.style.display = 'block';
   setTimeout(() => toast.style.display = 'none', 4000);
@@ -621,57 +632,34 @@ function afficherNotif(texte) {
     new Notification('StagEnsemble', { body: texte, icon: 'logo-attijari.png' });
   }
 }
-  
-function verifierNouveauMessages() { 
+
+function verifierNouveauxMessages() { 
   if (!currentUserId) return;
   const badge = document.getElementById('badge-mp');
   if (!badge) return;
   const all = getDB('messages_prives');
   const mesMessages = all.filter(m => m.destinataire_id == currentUserId);
-  const nouveaux = mesMessages.filter (m => m.id > dernierMsgId);
-  function verifierNouveauxMessages() { 
-   if (!currentUserId) return;
-   const badge = document.getElementById('badge-mp');
-   if (!badge) return;
-   const all = getDB('messages_prives');
-   const mesMessages = all.filter(m => m.destinataire_id == currentUserId);
-   const dernierMsgId = localStorage.getItem('lastMsgId') || 0;
-   const nouveaux = mesMessages.filter(m => m.id > dernierMsgId);
-   if (nouveaux.length > 0) {
-     badge.textContent = nouveaux.length;
-     badge.style.display = 'inline';
-     const dernier = nouveaux[nouveaux.length - 1];
-     const stagiaires = getDB('stagiaires');
-     const expediteur = stagiaires.find(s => s.id == dernier.expediteur_id);
-     const nomExp = expediteur ? expediteur.prenom : 'Quelqu\'un';
-     const pageActive = document.querySelector('#page-messagerie');
-     if (pageActive && pageActive.style.display == 'none') {
-       afficherNotif(`${nomExp} vous a envoyé un message`);
-     }
-     localStorage.setItem('lastMsgId', Math.max(...mesMessages.map(m => m.id)));
-   }
+  const nouveaux = mesMessages.filter(m => m.id > lastMsgId);
+  if (nouveaux.length > 0) {
+    badge.textContent = nouveaux.length;
+    badge.style.display = 'inline';
+    const dernier = nouveaux[nouveaux.length - 1];
+    const stagiaires = getDB('stagiaires');
+    const expediteur = stagiaires.find(s => s.id == dernier.expediteur_id);
+    const nomExp = expediteur ? expediteur.prenom : 'Quelqu\'un';
+    const pageActive = document.querySelector('#page-messagerie');
+    if (pageActive && pageActive.style.display == 'none') {
+      afficherNotif(`${nomExp} vous a envoyé un message`);
+    }
+    lastMsgId = Math.max(...mesMessages.map(m => m.id));
+  }
 }
-  if (!currentUserId) return;
-  const badge = document.getElementById(!badge-mp');
-  if (!badge) return;
-
-  const all = getDB('messages_prives');
 
 // ── Initialisation ────────────────────────────
 initDemoData();
 showPage('login');
 
-  <div id="toast-notif" style="
-      display:none; position:fixed; bottom:24px; right:24px;
-      background:#1e1e2e; color:white; padding:14px 20px;
-      border-radius:12px; font-size:0.9rem; z-index:9999;
-      box-shadow:0 4px 20px rgba(0,0,0,0.3); max-width:280px;
-      border-left: 4px solid #c8922a;">
-      💬 <span id="toast-text">Nouveau message</span>
-  </div>
-  
 </script>
-
 
 </body>
 </html>

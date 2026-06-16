@@ -29,33 +29,33 @@
 </nav>
 
 <!-- =============================================
-     PAGE : LOGIN
-     ============================================= -->
-<div id="page-login" class="auth-page" style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh;">
-  <div class="auth-logo">
-    🎓 StagEnsemble
-    <span>Attijariwafa Bank — Espace Stagiaires</span>
-  </div>
-  <div class="auth-card">
-    <h1>Connexion</h1>
-    <div id="login-success" class="alert-success" style="display:none;">
-      ✅ Inscription réussie ! Vous pouvez maintenant vous connecter.
+       PAGE 1 : CONNEXION (LOGIN) — VERSION CORRIGÉE
+       ============================================= -->
+  <div id="page-login" class="container active">
+    <div class="auth-wrapper">
+      <div class="auth-card">
+        <h2>Connexion</h2>
+        <!-- Ces blocs d'alertes doivent être visibles si besoin -->
+        <div id="login-error" class="alert alert-error" style="display: none; padding: 12px; margin-bottom: 15px; background: #fee2e2; color: #c53030; border-radius: 10px;"></div>
+        <div id="login-success" class="alert alert-success" style="display: none; padding: 12px; margin-bottom: 15px; background: #ecfdf5; color: #065f46; border-radius: 10px;"></div>
+        
+        <!-- Remplacement du mécanisme onsubmit par un bouton standard avec id -->
+        <form onsubmit="return false;">
+          <label>Identifiant (prenom.nom)</label>
+          <input type="text" id="login-username" placeholder="ex: alice.dupont" required>
+          
+          <label>Mot de passe</label>
+          <input type="password" id="login-password" required>
+          
+          <!-- Ajout d'un ID et d'un onclick direct pour forcer l'action -->
+          <button type="button" id="btn-soumettre-login" onclick="actionLoginNouvelle()">Se connecter</button>
+        </form>
+        <div class="auth-link">
+          Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
+        </div>
+      </div>
     </div>
-    <div id="login-error" class="alert-error" style="display:none;"></div>
- 
-    <label for="login-id">Identifiant (prenom.nom)</label>
-    <input type="text" id="login-id" placeholder="ex : alice.dupont" onkeydown="if(event.key==='Enter') doLogin()">
- 
-    <label for="login-pwd">Mot de passe</label>
-    <input type="password" id="login-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
- 
-    <button onclick="doLogin()">Se connecter</button>
-    <div class="auth-link">
-      <a href="#" onclick="showPage('inscription')">Pas encore de compte ? S'inscrire</a>
-    </div>
   </div>
-</div>
- 
 <!-- =============================================
      PAGE : INSCRIPTION
      ============================================= -->

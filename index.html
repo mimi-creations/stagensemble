@@ -48,7 +48,7 @@
           <input type="password" id="login-password" required>
           
           <!-- Ajout d'un ID et d'un onclick direct pour forcer l'action -->
-          <button type="button" id="btn-soumettre-login" onclick="actionLoginNouvelle()">Se connecter</button>
+          <button type="button" id="btn-soumettre-login" onclick="doLogin()">Se connecter</button>
         </form>
         <div class="auth-link">
           Pas encore inscrit ? <a href="#" onclick="showPage('inscription')">Créer un compte</a>
@@ -343,8 +343,8 @@ function showPage(page) {
 
 // ── Login ─────────────────────────────────────
 function doLogin() {
-  const identifiant = document.getElementById('login-id').value.trim();
-  const pwd = document.getElementById('login-pwd').value;
+  const identifiant = document.getElementById('login-username').value.trim();
+  const pwd = document.getElementById('login-password').value;
   const errDiv = document.getElementById('login-error');
   errDiv.style.display = 'none';
 
@@ -629,19 +629,27 @@ function verifierNouveauMessages() {
   const all = getDB('messages_prives');
   const mesMessages = all.filter(m => m.destinataire_id == currentUserId);
   const nouveaux = mesMessages.filter (m => m.id > dernierMsgId);
-  if (nouveaux.length > 0 {
-    badge.textContent = nouveaux.length;
-    badge.style.display = 'inlin';
-    const dernier = nouveaux[nouveaux.length - 1];
-    const stagiares  = getDB('stagiares');
-    const expediteur = stagiares.find(s => s.id == dernier.expediteur_id);
-    const nomExp = expediteur ? expediteur.prenom : 'Quelq\'un';
-    const pageActive = document.querySelector('#page-messagerie');
-    if (pageActive && pageActive.styLe.display == 'none') {
-      afficherNotif('${nomExp} vous a envoyé un message');
-    }
-    dernierMsgId = Math.max(...mesMessages.map(m => m.id));
-  }
+  function verifierNouveauxMessages() { 
+   if (!currentUserId) return;
+   const badge = document.getElementById('badge-mp');
+   if (!badge) return;
+   const all = getDB('messages_prives');
+   const mesMessages = all.filter(m => m.destinataire_id == currentUserId);
+   const dernierMsgId = localStorage.getItem('lastMsgId') || 0;
+   const nouveaux = mesMessages.filter(m => m.id > dernierMsgId);
+   if (nouveaux.length > 0) {
+     badge.textContent = nouveaux.length;
+     badge.style.display = 'inline';
+     const dernier = nouveaux[nouveaux.length - 1];
+     const stagiaires = getDB('stagiaires');
+     const expediteur = stagiaires.find(s => s.id == dernier.expediteur_id);
+     const nomExp = expediteur ? expediteur.prenom : 'Quelqu\'un';
+     const pageActive = document.querySelector('#page-messagerie');
+     if (pageActive && pageActive.style.display == 'none') {
+       afficherNotif(`${nomExp} vous a envoyé un message`);
+     }
+     localStorage.setItem('lastMsgId', Math.max(...mesMessages.map(m => m.id)));
+   }
 }
   if (!currentUserId) return;
   const badge = document.getElementById(!badge-mp');

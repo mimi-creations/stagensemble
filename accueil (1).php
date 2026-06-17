@@ -1,0 +1,103 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['utilisateur'])) {
+    header("Location: login.php");
+    exit;
+}
+require_once 'db.php';
+$utilisateur = htmlspecialchars($_SESSION['utilisateur']);
+$stmtStagiaires = $pdo->query("SELECT COUNT(*) FROM anciens_stagiaires");
+$totalStagiaires = $stmtStagiaires->fetchColumn();
+$stmtRessources = $pdo->query("SELECT COUNT(*) FROM ressources");
+$totalRessources = $stmtRessources->fetchColumn();
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .welcome-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 50px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 1px solid rgba(212, 160, 23, 0.15);
+            margin-top: 40px;
+        }
+        .welcome-card h1 {
+            font-size: 2.2rem;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        .welcome-card h1 span {
+            color: #e85d04; 
+        }
+        .welcome-card p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body style="background-color: #faf7f2; margin: 0; padding: 0; font-family: 'Inter', sans-serif;">
+
+    <?php include 'navbar.php'; ?>
+
+    <div id="page-accueil">
+    <div class="container">
+        <div class="hero">
+            <h1>Bienvenue, <span id="welcome-name">Stagiaire</span> ! 👋</h1>
+            <p>Vous êtes connecté à l'espace stagiaire d'Attijariwafa Bank. Explorez, échangez et apprenez ensemble.</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <strong ><?= $totalStagiaires ?></strong>
+                    <span>Stagiaires inscrits</span>
+                </div>
+                <div class="hero-stat">
+                    <strong ><?= $totalRessources ?></strong>
+                    <span>Ressources partagées</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <a class="feature-card" href="annuaire.php">
+                <span class="icon">📋</span>
+                <h3>Annuaire</h3>
+                <p>Retrouvez tous les anciens stagiaires et leurs contacts.</p>
+            </a>
+            <a class="feature-card" href="chat.php">
+                <span class="icon">💬</span>
+                <h3>Chat Stagiaires</h3>
+                <p>Discutez en temps réel avec tous les stagiaires.</p>
+            </a>
+            <a class="feature-card" href="messagerie.php">
+                <span class="icon">🔒</span>
+                <h3>Chat Privé</h3>
+                <p>Envoyez des messages privés à un stagiaire en particulier.</p>
+            </a>
+            <a class="feature-card" href="ressources.php">
+                <span class="icon">📚</span>
+                <h3>Ressources</h3>
+                <p>Partagez vos projets, problèmes résolus et conseils.</p>
+            </a>
+        </div>
+    </div>
+    </div>
+
+
+</body>
+</html>

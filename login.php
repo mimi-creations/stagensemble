@@ -24,8 +24,7 @@ if (isset($_POST['email'], $_POST['motdepasse'])) {
         $_SESSION['utilisateur'] = $user;
         $_SESSION['utilisateur_id'] = $user['id'];
 
-        header("Location: index.php"); ✅
-        exit();
+        header("Location: index.php"); 
     } else {
         $erreur = "Email ou mot de passe incorrect";
     }

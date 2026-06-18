@@ -6,7 +6,7 @@
         🎓 StagEnsemble
     </span>
     
-    <a href="accueil.php">Accueil</a>
+    <a href="index.php">Accueil</a>
     <a href="annuaire.php">Annuaire</a>
     <a href="chat.php">Chat Stagiaires</a>
     <a href="messagerie.php">Chat Privé</a>

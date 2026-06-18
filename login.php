@@ -16,7 +16,7 @@ if (isset($_GET['logout'])) {
 }
 
 if (isset($_SESSION['utilisateur'])) {
-    header("Location: accueil.php");
+    header("Location: index.php");
     exit;
 }
 

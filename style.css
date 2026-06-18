@@ -60,8 +60,8 @@ nav { background: var(--gradient-nav); padding: 0 24px; display: flex; align-ite
 }
 
 .nav-logo {
-   height: 90px;
-   width: 140px;
+   height: 140px;
+   width: 220px;
    object-fit: contain;
    object-position: center;
 }

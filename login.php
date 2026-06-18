@@ -14,7 +14,7 @@ if (isset($_SESSION['utilisateur'])) {
     exit();
 }
 
-if ($user) {
+if ($_user) {
     $_SESSION['utilisateur'] = $user;
     header("Location: index.php"); 
     exit();

@@ -9,17 +9,14 @@ $utilisateurs = [
 
 $erreur = "";
 
-session_start();
-
 if (isset($_SESSION['utilisateur'])) {
     header("Location: index.php");
     exit();
 }
 
-// après vérification login
 if ($user) {
     $_SESSION['utilisateur'] = $user;
-    header("Location: index.php"); // ✅ corrigé
+    header("Location: index.php"); 
     exit();
 }
 

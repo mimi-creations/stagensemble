@@ -1,11 +1,9 @@
 <?php
-session_start();
-require_once 'db.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-$utilisateurs = [
-    "admin" => "motdepasse123",
-    "alice" => "alice2024",
-];
+require_once 'db.php';
 
 $erreur = "";
 
@@ -14,39 +12,27 @@ if (isset($_SESSION['utilisateur'])) {
     exit();
 }
 
-if ($_user) {
-    $_SESSION['utilisateur'] = $user;
-    header("Location: index.php"); 
-    exit();
-}
+if (isset($_POST['email'], $_POST['motdepasse'])) {
 
+    $email = $_POST['email'];
+    $motdepasse = $_POST['motdepasse'];
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $identifiant = trim($_POST['nom'] ?? '');
-    $motdepasse = $_POST['motdepasse'] ?? '';
+    $stmt = $pdo->prepare("SELECT * FROM anciens_stagiaires WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
 
-    if (empty($identifiant) || empty($motdepasse)) {
-        $erreur = "Veuillez remplir tous les champs.";
+    if ($user && $user['motdepasse'] === $motdepasse) {
+        $_SESSION['utilisateur'] = $user;
+        $_SESSION['utilisateur_id'] = $user['id'];
+
+        header("Location: index.php"); ✅
+        exit();
     } else {
-        if (!str_contains($identifiant, '.')) {
-            $erreur = "L'identifiant doit être au format prenom.nom (ex: alice.dupont)";
-        } else {
-            list($prenom, $nom) = explode('.', $identifiant, 2);
-            $stmt = $pdo->prepare("SELECT * FROM anciens_stagiaires WHERE prenom = ? AND nom = ?");
-            $stmt->execute([trim($prenom), trim($nom)]);
-            $user = $stmt->fetch();
-            if ($user && $user['motdepasse'] === $motdepasse) {
-                $_SESSION['utilisateur'] = $user['prenom'];
-                $_SESSION['utilisateur_id']= $user['id'];
-                header("Location: accueil.php");
-                exit;
-            } else {
-                $erreur = "Identifiant (prenom.nom) ou mot de passe incorrect.";
-            }
-        }
+        $erreur = "Email ou mot de passe incorrect";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>

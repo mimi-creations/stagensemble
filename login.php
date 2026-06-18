@@ -9,16 +9,20 @@ $utilisateurs = [
 
 $erreur = "";
 
-if (isset($_GET['logout'])) {
-    session_destroy();
+session_start();
+
+if (isset($_SESSION['utilisateur'])) {
     header("Location: index.php");
     exit();
 }
 
-if (isset($_SESSION['utilisateur'])) {
-    header("Location: index.php");
-    exit;
+// après vérification login
+if ($user) {
+    $_SESSION['utilisateur'] = $user;
+    header("Location: index.php"); // ✅ corrigé
+    exit();
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $identifiant = trim($_POST['nom'] ?? '');

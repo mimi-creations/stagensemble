@@ -2,11 +2,6 @@
 session_start();
 require_once 'db.php';
 
-$utilisateurs = [
-    "admin" => "motdepasse123",
-    "alice" => "alice2024",
-];
-
 $erreur = "";
 
 if (isset($_GET['logout'])) {
@@ -34,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt = $pdo->prepare("SELECT * FROM anciens_stagiaires WHERE prenom = ? AND nom = ?");
             $stmt->execute([trim($prenom), trim($nom)]);
             $user = $stmt->fetch();
-            if ($user && $user['motdepasse'] === $motdepasse) {
+            if ($user && password_verify($motdepasse, $user['motdepasse'])) {
                 $_SESSION['utilisateur'] = $user['prenom'];
                 $_SESSION['utilisateur_id']= $user['id'];
                 header("Location: index.php");

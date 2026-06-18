@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,6 +16,7 @@
         .link { text-align: center; margin-top: 15px; font-size: 13px; }
         .link a { color: #6c63ff; text-decoration: none; }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="box">

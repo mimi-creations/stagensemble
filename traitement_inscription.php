@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $ecole = trim($_POST['ecole'] ?? '');
     $annee_stage = trim($_POST['annee_stage'] ?? '');  
     $duree_stage = trim($_POST['duree_stage'] ?? '');
-    $motdepasse = $_POST['motdepasse'] ?? '';
+    $motdepasse = password_hash ($_POST['motdepasse'], PASSWORD_DEFAULT) ?? '';
     if (empty($nom) || empty($prenom) || empty($email) || empty($motdepasse)) {
         echo "Erreur : veuillez remplir tous les champs obligatoires. <a href='inscription.php'>Retour</a>";
         exit;

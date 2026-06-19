@@ -1,3 +1,6 @@
+<? php
+    $page_actuelle = basename($_SERVER['PHP_SELF']); 
+?>
 <nav>
     <div class="nav-logo-wrapper" style="display: flex; align-items: center;">
         <img src="logo-attijari.png" alt="Attijariwafa Bank" class="nav-logo" style="max-height: 40px; margin-right: 10px;">
@@ -6,11 +9,11 @@
         🎓 StagEnsemble
     </span>
     
-    <a href="index.php">Accueil</a>
-    <a href="annuaire.php">Annuaire</a>
-    <a href="chat.php">Chat Stagiaires</a>
-    <a href="messagerie.php">Chat Privé</a>
-    <a href="ressources.php">Ressources &amp; Problèmes</a>
-    <a href="parametres.php">Mon Compte</a>
+    <a href="index.php" class="<?= $page_actuelle == 'index.php' ? 'active' : '' ?>">Accueil</a>
+    <a href="annuaire.php"  class="<?= $page_actuelle == 'annuaire.php' ? 'active' : '' ?>">Annuaire</a>
+    <a href="chat.php"  class="<?= $page_actuelle == 'chat.php' ? 'active' : '' ?>">Chat Stagiaires</a>
+    <a href="messagerie.php"  class="<?= $page_actuelle == 'messagerie.php' ? 'active' : '' ?>">Chat Privé</a>
+    <a href="ressources.php"  class="<?= $page_actuelle == 'ressources.php' ? 'active' : '' ?>">Ressources &amp; Problèmes</a>
+    <a href="parametres.php"  class="<?= $page_actuelle == 'parametres.php' ? 'active' : '' ?>">Mon Compte</a>
     <a href="deconnexion.php" class="nav-logout" style="color:red;">Déconnexion</a>
 </nav>

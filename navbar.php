@@ -1,7 +1,13 @@
 <?php
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
-    $stmt->execute([$_SESSION['utilisateur_id']]);
-    $nbMessages = $stmt->fetchColumn();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once 'db.php';
+
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
+$stmt->execute([$_SESSION['utilisateur_id'] ?? 0]);
+$nbMessages = $stmt->fetchColumn();
 ?>
 
 <nav>
@@ -15,7 +21,21 @@
     <a href="index.php">Accueil</a>
     <a href="annuaire.php">Annuaire</a>
     <a href="chat.php">Chat Stagiaires</a>
-    <a href="messagerie.php">Chat Privé</a>
+    <a href="messagerie.php">
+        Messagerie
+        <?php if ($nbMessages > 0): ?>
+            <span style="
+                background:red;
+                color:white;
+                border-radius:50%;
+                padding:4px 8px;
+                margin-left:5px;
+                font-size:12px;
+            ">
+                <?php echo $nbMessages; ?>
+            </span>
+        <?php endif; ?>
+    </a>
     <a href="ressources.php">Ressources &amp; Problèmes</a>
     <a href="parametres.php">Mon Compte</a>
     <a href="deconnexion.php" class="nav-logout" style="color:red;">Déconnexion</a>

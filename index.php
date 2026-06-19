@@ -103,6 +103,24 @@ $nbMessages = $stmt->fetchColumn();
     </div>
     </div>
 
+<script>
+    function toggleTheme() {
+        let current = document.body.classList.toggle("dark");
+    
+        if (current) {
+            localStorage.setItem("theme", "dark");
+        } else {
+            localStorage.setItem("theme", "light");
+        }
+    }
+    
+    // Charger le thème sauvegardé
+    window.onload = function () {
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark");
+        }
+    };
+</script>
 
 </body>
 </html>

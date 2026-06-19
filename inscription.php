@@ -21,23 +21,38 @@
 <body>
     <div class="box">
         <h2>Inscription</h2>
+        
         <form action="traitement_inscription.php" method="POST">
             <label>Prénom *</label>
             <input type="text" name="prenom" required>
-            <label> Nom * </label>
+        
+            <label>Nom *</label>
             <input type="text" name="nom" required>
+        
             <label>Adresse Email *</label>
             <input type="email" name="email" placeholder="ex:john.doe@entreprise.com" required>
-            <label> Mot de passe *</label>
+        
+            <label>Mot de passe *</label>
             <input type="password" name="motdepasse" required>
+        
             <label>Ecole / Université</label>
             <input type="text" name="ecole">
+        
             <label>Année de stage</label>
             <input type="text" name="annee_stage" placeholder="ex:2024">
+        
             <label>Durée du stage</label>
             <input type="text" name="duree_stage" placeholder="ex:6 mois">
-            <input type="submit" value="Envoyer mon isncription">
+      
+            <label style="display:flex; align-items:center; gap:10px;">
+                <input type="checkbox" name="recontacter" value="1">
+                Je souhaite être recontacté par l’entreprise
+            </label>
+    
+            <input type="submit" value="Envoyer mon inscription">
         </form>
+
+
         <div class="link">
             <a href="login.php">Déjà un compte ? Seconnecter</a>
         </div>

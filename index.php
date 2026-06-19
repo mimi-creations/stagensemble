@@ -11,6 +11,11 @@ $stmtStagiaires = $pdo->query("SELECT COUNT(*) FROM anciens_stagiaires");
 $totalStagiaires = $stmtStagiaires->fetchColumn();
 $stmtRessources = $pdo->query("SELECT COUNT(*) FROM ressources");
 $totalRessources = $stmtRessources->fetchColumn();
+
+
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
+$stmt->execute([$_SESSION['utilisateur_id']]);
+$nbMessages = $stmt->fetchColumn();
 ?>
 
 <!DOCTYPE html>

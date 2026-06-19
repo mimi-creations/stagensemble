@@ -54,7 +54,7 @@
 
 
         <div class="link">
-            <a href="login.php">Déjà un compte ? Seconnecter</a>
+            <a href="login.php">Déjà un compte ? Se connecter</a>
         </div>
     </div>
 </body>

@@ -1,3 +1,9 @@
+<?php
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
+    $stmt->execute([$_SESSION['utilisateur_id']]);
+    $nbMessages = $stmt->fetchColumn();
+?>
+
 <nav>
     <div class="nav-logo-wrapper" style="display: flex; align-items: center;">
         <img src="logo-attijari.png" alt="Attijariwafa Bank" class="nav-logo" style="max-height: 40px; margin-right: 10px;">

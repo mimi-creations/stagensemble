@@ -47,6 +47,30 @@ body {
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;
+  background-color: #faf7f2;
+  color: #1a1a1a;
+}
+
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+/* Cartes */
+body.dark .feature-card,
+body.dark .welcome-card {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+/* Navbar */
+body.dark nav {
+    background-color: #1a1a1a;
+}
+
+/* Textes */
+body.dark p {
+    color: #ccc;
 }
  
 /* NAV */

@@ -5,10 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'db.php';
 
-<button onclick="toggleTheme()" style="margin-left:20px;">
-    🌙 / ☀️
-</button>
-
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
 $stmt->execute([$_SESSION['utilisateur_id'] ?? 0]);
 $nbMessages = $stmt->fetchColumn();
@@ -21,6 +17,10 @@ $nbMessages = $stmt->fetchColumn();
     <span class="nav-brand" style="display: flex; align-items: center; gap: 5px; font-weight: bold; color: #fff; margin-right: 20px;">
         🎓 StagEnsemble
     </span>
+    
+    <button onclick="toggleTheme()" style="margin-left:20px;">
+        🌙 / ☀️
+    </button>
     
     <a href="index.php">Accueil</a>
     <a href="annuaire.php">Annuaire</a>

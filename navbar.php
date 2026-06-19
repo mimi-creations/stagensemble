@@ -5,6 +5,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'db.php';
 
+<button onclick="toggleTheme()" style="margin-left:20px;">
+    🌙 / ☀️
+</button>
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
 $stmt->execute([$_SESSION['utilisateur_id'] ?? 0]);
 $nbMessages = $stmt->fetchColumn();

@@ -44,19 +44,7 @@ $messages = $stmt->fetchAll();
     <head>
         <meta charset="UTF-8">
         <title>Discussion avec <?= htmlspecialchars($destinataire['prenom']) ?></title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f9;}
-            .container  { max-width: 600px; margin: 30px auto; background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 500px}
-            .chat-header { background: #6c63ff; color: white; padding: 15px; border-top-left-raidus: 8px; font-weight: bold; display: flex; justify-content: space-between; }
-            .chat-header a { color: white; text-decoration: none; font-size: 14px; }
-            .chat-box { flex: 1; padding: 20px; overflow-y: auto; background: #fafafa; }
-            .bubble { padding: 10px 14px; border-radius: 15px; margin-bottom: 10px; max-width: 70%; word-wrap: break-word; font-size: 14px; }
-            .bubble.me { background: #6c63ff; color: white; margin-left: auto; border-bottom-right-radius: 0; }
-            .bubble.other { background: #e9ecef; color: #333; margin-right: auto; border-bottom-left-radius: 0; }
-            .chat-form { padding: 15px; display: flex; border-top: 1px solid #eee; }
-            .chat-form input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-            .chat-form input[type="submit"] { background: #28a745; color: white; border: none; padding: 0 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; }
-        </style>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <nav>

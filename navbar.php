@@ -5,6 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once 'db.php';
 
+$page_actuelle = basename($_SERVER['PHP_SELF']);
+
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages_prives WHERE destinataire_id = ? AND lu = 0");
 $stmt->execute([$_SESSION['utilisateur_id'] ?? 0]);
 $nbMessages = $stmt->fetchColumn();
@@ -12,7 +14,7 @@ $nbMessages = $stmt->fetchColumn();
 
 <nav>
     <div class="nav-logo-wrapper" style="display: flex; align-items: center;">
-        <img src="logo-attijari.png" alt="Attijariwafa Bank" class="nav-logo" style="max-height: 40px; margin-right: 10px;">
+        <img src="logo-attijari.png" alt="Attijariwafa Bank" class="nav-logo" style="max-height: 90px; margin-right: 10px;">
     </div>
     <span class="nav-brand" style="display: flex; align-items: center; gap: 5px; font-weight: bold; color: #fff; margin-right: 20px;">
         🎓 StagEnsemble
@@ -44,7 +46,7 @@ $nbMessages = $stmt->fetchColumn();
 
 <script>
 function toggleTheme() {
-    document.body.classlist.toggle('dark');
+    document.body.classList.toggle('dark');
     const isDark = document.body.classList.contains('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';

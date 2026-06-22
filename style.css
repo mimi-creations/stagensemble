@@ -52,25 +52,35 @@ body {
 }
 
 body.dark {
-    background-color: #121212;
-    color: #ffffff;
-}
-
-/* Cartes */
-body.dark .feature-card,
-body.dark .welcome-card {
-    background-color: #1e1e1e;
-    color: #ffffff;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
 }
 
 /* Navbar */
 body.dark nav {
-    background-color: #1a1a1a;
+    background-color: #16213e;
 }
 
-/* Textes */
-body.dark p {
-    color: #ccc;
+/* Cartes */
+body.dark .card {
+    background-color: #16213e;
+    color: #e0e0e0;
+    border-color: #2a2a4a;
+}
+
+/* Navbar */
+body.dark input, body.dark textarea, body.dark select {
+    background-color: #0f3460;
+    color: #e0e0e0;
+    border-color: #2a2a4a;
+}
+
+#theme-toggle {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-right: 10px;
 }
  
 /* NAV */

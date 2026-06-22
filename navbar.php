@@ -18,10 +18,6 @@ $nbMessages = $stmt->fetchColumn();
         🎓 StagEnsemble
     </span>
     
-    <button onclick="toggleTheme()" style="margin-left:20px;">
-        🌙 / ☀️
-    </button>
-    
     <a href="index.php">Accueil</a>
     <a href="annuaire.php">Annuaire</a>
     <a href="chat.php">Chat Stagiaires</a>
@@ -42,5 +38,6 @@ $nbMessages = $stmt->fetchColumn();
     </a>
     <a href="ressources.php">Ressources &amp; Problèmes</a>
     <a href="parametres.php">Mon Compte</a>
+    <button id="theme-toggle" onclick="toggleTheme()" title= "Changer le thème">🌙 / ☀️</button> 
     <a href="deconnexion.php" class="nav-logout" style="color:red;">Déconnexion</a>
 </nav>

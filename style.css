@@ -52,27 +52,103 @@ body {
 }
 
 body.dark {
+    --color-bg:         #1a1a2e;
+    --color-surface:    #16213e;
+    --color-text:       #e0e0e0;
+    --color-muted:      #a0a0b0;
+    --shadow-card:      0 4px 24px rgba(0,0,0,0.3);
+    --shadow-soft:      0 8px 32px rgba(0,0,0,0.4);
+   
     background-color: #1a1a2e;
     color: #e0e0e0;
 }
 
 /* Navbar */
 body.dark nav {
-    background-color: #16213e;
+    background: #0d0d1a;
+}
+
+body.dark .container {
+   background: #16213e;
 }
 
 /* Cartes */
 body.dark .card {
     background-color: #16213e;
+    border-color: #2a2a4a;
+}
+
+body.dark .feauture-card p {
+   color: #a0a0b0;
+}
+
+/* Navbar */
+body.dark input[type="text"],
+body.dark input[type="email"],
+body.dark input[type="password"],
+body.dark textarea, 
+body.dark select {
+    background-color: #0f3460;
     color: #e0e0e0;
     border-color: #2a2a4a;
 }
 
-/* Navbar */
-body.dark input, body.dark textarea, body.dark select {
-    background-color: #0f3460;
-    color: #e0e0e0;
-    border-color: #2a2a4a;
+body.dark .chat-box {
+   background: #16213e;
+}
+
+body.dark .message {
+   background: #0f3460;
+   color: #e0e0e0;
+}
+
+body.dark .bubble.other {
+   background: #0f3460;
+   color: #e0e0e0;
+}
+
+body.dark .sidebar,
+body.dark .chat-area,
+body.dark .chat-header,
+body.dark .private-form,
+body.dark .whatsapp-container {
+   background: #16213e;
+   border-color: #2a2a4a;
+}
+
+body.dark .contact-item {
+   color: #e0e0e0;
+   border-color: #2a2a4a;
+}
+
+body.dark .contact-item:hover {
+   background: #0f3460;
+}
+
+body.dark td {
+   border-color: #2a2a4a;
+   color: #e0e0e0;
+}
+
+body.dark tbody tr:nth-child(even) td {
+   background: rgba(255,255,255,0.03);
+}
+
+body.dark tbody tr:hover td {
+   background: rgba(255.255.255.0.06);
+}
+
+body.dark .form-ressource {
+   background: #16213e;
+   border-color: #2a2a4a;
+}
+
+body.dark .hr {
+   border-color: #2a2a4a;
+}
+
+body.dark p {
+   color: #a0a0b0;
 }
 
 #theme-toggle {

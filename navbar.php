@@ -41,3 +41,18 @@ $nbMessages = $stmt->fetchColumn();
     <button id="theme-toggle" onclick="toggleTheme()" title= "Changer le thème">🌙 / ☀️</button> 
     <a href="deconnexion.php" class="nav-logout" style="color:red;">Déconnexion</a>
 </nav>
+
+<script>
+function toggleTheme() {
+    document.body.classlist.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme == 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('theme-toggle').textContent = '☀️';
+}
+</script>

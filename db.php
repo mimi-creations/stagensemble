@@ -20,4 +20,18 @@ try {
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
+
+if
+(isset($_SESSION['utilisateurs_id'])) {
+    $pdo->prepare("
+        INSERT INTO
+utilisateurs_connectes
+(utilisateur_id, derniere_activite)
+        VALUES (?, NOW())
+        ON DUPLICATE KEY UPDATE
+derniere_activite = NOW()
+    ")
+>execute([$_SESSION['utilisateur_id']]
+);
+}
 ?>

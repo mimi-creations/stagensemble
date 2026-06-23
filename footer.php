@@ -7,5 +7,7 @@
       font-size: 0.85rem; margin-top: auto;
 ">
     <p>@ 2026 StagEnsemble - Conçu par et pour les stagiaires et alternants d'AttijariWafa Bank</p>
-    <p> style="margin-top: 4px; font-size: 0.78rem; opacity: 0.6;">Iman & Swann</p>
+      <p style="margin-top: 4px; font-size: 0.78rem; opacity: 0.6;">
+             Iman & Swann
+      </p>
 </footer>

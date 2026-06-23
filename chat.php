@@ -45,5 +45,6 @@ $messages = array_reverse($query->fetchAll());
             <button type="submit">Envoyer</button>
         </form>
     </div>
+<?php include 'footer.php';?>
 </body>
 </html>

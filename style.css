@@ -50,7 +50,6 @@ body {
   background-color: #faf7f2;
   color: #1a1a1a; 
  display: flex;
-  flex-direction: column;
 }
 
 .container {

@@ -105,13 +105,13 @@ if ($destinataire_id > 0) {
 
                             <span style="
                                 width: 10px; height: 10px;
-                                background: <?= in_array($c['id'],$enLigneIds) ? '#22c55e' : '#9ca3af' ? >;
+                                background: <?= in_array($c['id'], $enLigneIds) ? '#22c55e' : '#9ca3af' ?>;
                                 border-radius: 50%;
-                                display: inLine-block; 
                                 position: absolute; 
-                                bottom: 2px; right: 2px; 
+                                bottom: 1px; right: 1px; 
                                 border: 2px solid #fff; ">
                             </span>
+                        </div>
                             
                             <div style="flex: 1; min-width: 0;">
                                 <div style="display: flex; justify-content: space-between; align-items: baseline;">

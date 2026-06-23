@@ -99,6 +99,8 @@ if ($destinataire_id > 0) {
                 <?php else: ?>
                     <?php foreach ($conversations as $c): ?>
                         <a href="messagerie.php?id=<?= $c['id'] ?>" class="contact-item <?= ($destinataire_id == $c['id']) ? 'active' : '' ?>" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; text-decoration: none; color: inherit; border-bottom: 1px solid #f3f4f6;">
+                        
+                        <div style="position: relative; width:40px; height: 40px; flex-shrink: 0;">
                             <img src="<?= htmlspecialchars($c['avatar'] ?? 'default_avatar.png') ?>" alt="Avatar" class="contact-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
 
                             <span style="

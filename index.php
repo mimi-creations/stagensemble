@@ -26,7 +26,7 @@ $nbMessages = $stmt->fetchColumn();
     <title>Accueil</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="background-color: #faf7f2; margin: 0; padding: 0; font-family: 'Inter', sans-serif;">
+<body>
 
     <?php include 'navbar.php'; ?>
 

@@ -48,7 +48,13 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   background-color: #faf7f2;
-  color: #1a1a1a;
+  color: #1a1a1a; 
+ display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
 }
 
 body.dark {

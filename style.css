@@ -49,6 +49,17 @@ body {
   min-height: 100vh;
   background-color: #faf7f2;
   color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main, .container, #page-accueil {
+   flex: 1;
+}
+
+footer {
+   margin-top: auto;
 }
 
 body.dark {

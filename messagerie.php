@@ -47,8 +47,8 @@ if (!empty($idsContacts)) { $placeholders = implode(',', array_fill(0, count($id
     $stmt0nline = $pdo->prepare("SELECT utilisateur_id FROM utilisateurs_connectes
                                 WHERE utilisateur_id IN ($placeholders)
                                 AND derniere_activite > DATE_SUB(NOW(), INTERVAL 5 MINUTE)");
-    $stmt0nline
->execute($idsContacts);
+$stmt0nline
+>execute(array_values($idsContacts));
     $enLigneIds = $stmt0nline
 >fetchAll(PDO::FETCH_COLUMN);
 }

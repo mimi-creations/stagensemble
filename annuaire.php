@@ -74,5 +74,6 @@ if (!empty($recherche)) {
             </tbody>
         </table>
     </div>
+<?php include 'footer.php';?>
 </body>
 </html>

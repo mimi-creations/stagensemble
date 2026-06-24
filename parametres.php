@@ -25,18 +25,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $secteur = trim($_POST['secteur'] ?? '');
     $linkedin = trim($_POST['linkedin'] ?? '');
     $nom_avatar=$user['avatar'];
+    
+    $dossier_cible ="uploads/";
+
+    if (!is_dir("uploads")) {
+        mkdir("uploads", 0777, true);
+        chmod("uploads", 0777);
+    }
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
-        $dossier_cible ="uploads/";
         $extension =strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
         $extension_autorisees= ['jpg','jpeg', 'png', 'gif'];
+        
         if (in_array($extension, $extension_autorisees)) {
-            $nom_avatar = "uploads/avatar_" . $id_utilisateur . "." . $extension;
+            
+            $nom_avatar = $dossier_cible . "avatar_" . $id_utilisateur . "." . $extension;
             
             move_uploaded_file($_FILES['avatar']['tmp_name'], $nom_avatar);
         }else{
             $erreur = "Format d'image non valide (JPG, PNG, GIF uniquement).";
         }
     }
+                
     if (empty($erreur)) {
         $stmt = $pdo->prepare("UPDATE anciens_stagiaires SET biographie = ?, parcours_scolaire = ?, telephone =? , ecole = ?, annee_stage = ?, duree_stage = ?, secteur = ?, linkedin = ?, avatar = ? WHERE id = ?");
         $stmt ->execute([$biographie, $parcours, $telephone, $ecole, $annee_stage, $duree_stage, $secteur, $linkedin, $nom_avatar, $id_utilisateur]);
@@ -46,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $nouveau_mdp = $_POST['nouveau_mdp'] ?? '' ; 
 
     if (!empty($ancien_mdp) && !empty($nouveau_mdp)) {
-        if (password_verify($ancien_mdp, $user['mot_de_pass'])) {
+        if (password_verify($ancien_mdp, $user['motdepasse'])) {
             $nouveau_mdp_hache = password_hash($nouveau_mdp, PASSWORD_BCRYPT);
             $stmt=$pdo->prepare("UPDATE anciens_stagiaires SET mot_de_pass = ? WHERE id =?");
             $stmt->execute([$nouveau_mdp_hache, $id_utilisateur]);

@@ -2,6 +2,26 @@
 session_start();
 require_once 'db.php';
 
+if (!esset($_SESSION['utilisateur_id'])) {
+    header("Location: login.php");
+    exit;
+}
+$mon-id    = intval($-SESSION['utilisateur-id']);
+$groupe_id = intval($-GET['id'] ?? 0);
+
+if ($groupe_id ≤ 0) {
+    header("Location: messagerie.php");
+    exit;
+}
+
+//Vérifier que l'utilisateur est bien membre du groupe
+$stmtCheck = $pdo ->prepare("SELECT id FROM groupe_membres WHERE groupe_id = ? AND membre_id = ?");
+$stmtCheck->execute([$groupe_id, $mon_id]);
+if (!$stmtCheck->fetch()) {
+    header("Location: messagerie.php");
+    exit;
+}
+
 $groupe_id = $_GET['id'];
 
 // envoyer message

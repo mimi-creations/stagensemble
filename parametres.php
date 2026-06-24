@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
                 <input type="submit" class="btn-primary" value="Enregistrer les modifications">
             </div>
         </form>
-        <h3>📚 Mes ressources</h3>
+        <h3> <br> 📚 Mes ressources</h3>
         <?php if (count($mesRessources) > 0): ?>
             <?php foreach ($mesRessources as $res): ?>
                 <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">

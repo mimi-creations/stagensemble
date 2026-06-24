@@ -59,8 +59,8 @@ if (!empty($idsContacts)) {
 // Liste des groupes dont je suis membre
 $stmtGroupes = $pdo->prepare("
     SELECT g.id, g.nom, g.photo,
-        (SELECT message FROM messages_groupe WHERE groupe_id = g.id ORDER BY date_envoi DESC LIMIT 1) as dernier_message,
-        (SELECT MAX(date_envoi) FROM messages_groupe WHERE groupe_id = g.id) as date_dernier_msg
+        (SELECT message FROM messages_groupes WHERE groupe_id = g.id ORDER BY date_envoi DESC LIMIT 1) as dernier_message,
+        (SELECT MAX(date_envoi) FROM messages_groupes WHERE groupe_id = g.id) as date_dernier_msg
     FROM groupes g
     JOIN groupe_membres gm ON gm.groupe_id = g.id
     WHERE gm.membre_id = ?

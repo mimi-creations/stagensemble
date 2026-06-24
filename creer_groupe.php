@@ -21,28 +21,29 @@ if (empty($nom_groupe) || empty($membres)) {
     exit;
 }
 
-// Upload photo (colonne "image" dans ta table groupes)
-$image_path = null;
-if (!empty($_FILES['photo']['name'])) {
+// Convertir la photo en base64 (stockée directement en BDD)
+$image_base64 = null;
+if (!empty($_FILES['photo']['tmp_name']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
     $ext      = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
     $autorise = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
     if (in_array($ext, $autorise)) {
-        $dossier = 'uploads/groupes/';
-        if (!is_dir($dossier)) mkdir($dossier, 0755, true);
-
-        $nom_fichier = 'groupe_' . uniqid() . '.' . $ext;
-        $destination = $dossier . $nom_fichier;
-
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], $destination)) {
-            $image_path = $destination;
-        }
+        $mime_types = [
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png'  => 'image/png',
+            'gif'  => 'image/gif',
+            'webp' => 'image/webp',
+        ];
+        $mime         = $mime_types[$ext];
+        $contenu      = file_get_contents($_FILES['photo']['tmp_name']);
+        $image_base64 = 'data:' . $mime . ';base64,' . base64_encode($contenu);
     }
 }
 
 // Créer le groupe
 $stmt = $pdo->prepare("INSERT INTO groupes (nom, image, createur_id) VALUES (?, ?, ?)");
-$stmt->execute([$nom_groupe, $image_path, $mon_id]);
+$stmt->execute([$nom_groupe, $image_base64, $mon_id]);
 $groupe_id = $pdo->lastInsertId();
 
 // Ajouter le créateur comme membre

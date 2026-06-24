@@ -63,7 +63,7 @@ $stmtGroupes = $pdo->prepare("
         (SELECT MAX(date_envoi) FROM messages_groupes WHERE groupe_id = g.id) as date_dernier_msg
     FROM groupes g
     JOIN groupe_membres gm ON gm.groupe_id = g.id
-    WHERE gm.membre_id = ?
+    WHERE gm.utilisateur_id = ?
     ORDER BY date_dernier_msg DESC, g.nom ASC
 ");
 $stmtGroupes->execute([$mon_id]);

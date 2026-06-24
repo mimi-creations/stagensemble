@@ -10,9 +10,7 @@ if (!isset($_SESSION['utilisateur_id'])) {
 $mon_id = $_SESSION['utilisateur_id'];
 $destinataire_id = intval($_GET['id'] ?? 0);
 
-//////////////////////////////////////////////////
 // ✅ ENVOYER MESSAGE PRIVÉ
-//////////////////////////////////////////////////
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['message']) && $destinataire_id > 0) {
     $message = trim($_POST['message']);
@@ -29,9 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['message']) && $destin
     exit;
 }
 
-//////////////////////////////////////////////////
 // ✅ CRÉER GROUPE
-//////////////////////////////////////////////////
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['creer_groupe'])) {
 
@@ -63,9 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['creer_groupe'])) {
     exit;
 }
 
-//////////////////////////////////////////////////
 // ✅ MARQUER LU
-//////////////////////////////////////////////////
 
 if ($destinataire_id > 0) {
     $stmt_update = $pdo->prepare("
@@ -76,9 +70,7 @@ if ($destinataire_id > 0) {
     $stmt_update->execute([$destinataire_id, $mon_id]);
 }
 
-//////////////////////////////////////////////////
 // ✅ CONVERSATIONS
-//////////////////////////////////////////////////
 
 $stmt = $pdo->prepare("
 SELECT s.id, s.nom, s.prenom, s.avatar,
@@ -95,9 +87,7 @@ WHERE s.id != ?
 $stmt->execute([$mon_id, $mon_id, $mon_id]);
 $conversations = $stmt->fetchAll();
 
-//////////////////////////////////////////////////
 // ✅ GROUPES
-//////////////////////////////////////////////////
 
 $stmt = $pdo->prepare("
 SELECT g.* FROM groupes g
@@ -108,9 +98,7 @@ WHERE gm.utilisateur_id = ?
 $stmt->execute([$mon_id]);
 $groupes = $stmt->fetchAll();
 
-//////////////////////////////////////////////////
 // ✅ MESSAGES PRIVÉS
-//////////////////////////////////////////////////
 
 $messages = [];
 $destinataire = null;
@@ -138,7 +126,9 @@ if ($destinataire_id > 0) {
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Messagerie</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>

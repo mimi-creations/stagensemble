@@ -14,8 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $probleme = $_POST['probleme'];
     $solution = $_POST['solution'];
     $auteur   = $_SESSION['utilisateur'];
-    $stmt     = $pdo->prepare("INSERT INTO ressources (titre, sujet, probleme_rencontre, solution_utilisee, auteur, date_publication) VALUES (?, ?, ?, ?, ?, NOW())");
-    $stmt->execute([$titre, $sujet, $probleme, $solution, $auteur]);
+    $stmt = $pdo->prepare("INSERT INTO ressources 
+    (titre, sujet, probleme_rencontre, solution_utilisee, auteur, utilisateur_id, date_publication) 
+    VALUES (?, ?, ?, ?, ?, ?, NOW())
+    ");
+
+    $stmt->execute([
+        $titre,
+        $sujet,
+        $probleme,
+        $solution,
+        $auteur,
+        $_SESSION['utilisateur_id'] 
+]);
+
     header('Location: ressources.php');
     exit();
 }

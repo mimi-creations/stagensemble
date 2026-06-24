@@ -7,189 +7,210 @@ if (!isset($_SESSION['utilisateur_id'])) {
     exit;
 }
 
-
-
-$mon_id = intval($_SESSION['utilisateur_id']);
+$mon_id = $_SESSION['utilisateur_id'];
 $destinataire_id = intval($_GET['id'] ?? 0);
-if ($_SERVER["REQUEST_METHOD"]==="POST" && $destinataire_id > 0 && !empty(trim($_POST['message'] ?? ''))) {
+
+//////////////////////////////////////////////////
+// ✅ ENVOYER MESSAGE PRIVÉ
+//////////////////////////////////////////////////
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['message']) && $destinataire_id > 0) {
     $message = trim($_POST['message']);
-    $stmt = $pdo->prepare("INSERT INTO messages_prives (expediteur_id, destinataire_id, message, lu) VALUES (?,?,?,0)");
-    $stmt->execute([$mon_id, $destinataire_id, $message]);
+
+    if (!empty($message)) {
+        $stmt = $pdo->prepare("
+            INSERT INTO messages_prives (expediteur_id, destinataire_id, message, lu)
+            VALUES (?, ?, ?, 0)
+        ");
+        $stmt->execute([$mon_id, $destinataire_id, $message]);
+    }
+
     header("Location: messagerie.php?id=" . $destinataire_id);
     exit;
 }
 
-if ($destinataire_id >0) {
-    $stmt_update = $pdo->prepare("UPDATE messages_prives SET lu = 1 WHERE expediteur_id = ? AND destinataire_id = ? AND lu =0");
+//////////////////////////////////////////////////
+// ✅ CRÉER GROUPE
+//////////////////////////////////////////////////
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['creer_groupe'])) {
+
+    $nom = trim($_POST['nom_groupe']);
+
+    if (!empty($nom)) {
+
+        // créer groupe
+        $stmt = $pdo->prepare("INSERT INTO groupes (nom, createur_id) VALUES (?, ?)");
+        $stmt->execute([$nom, $mon_id]);
+
+        $groupe_id = $pdo->lastInsertId();
+
+        // ajouter créateur
+        $stmt_add = $pdo->prepare("INSERT INTO groupe_membres (groupe_id, utilisateur_id) VALUES (?, ?)");
+        $stmt_add->execute([$groupe_id, $mon_id]);
+
+        // ajouter membres
+        if (!empty($_POST['membres'])) {
+            foreach ($_POST['membres'] as $id) {
+                if ($id != $mon_id) {
+                    $stmt_add->execute([$groupe_id, $id]);
+                }
+            }
+        }
+    }
+
+    header("Location: messagerie.php");
+    exit;
+}
+
+//////////////////////////////////////////////////
+// ✅ MARQUER LU
+//////////////////////////////////////////////////
+
+if ($destinataire_id > 0) {
+    $stmt_update = $pdo->prepare("
+        UPDATE messages_prives 
+        SET lu = 1 
+        WHERE expediteur_id = ? AND destinataire_id = ? AND lu = 0
+    ");
     $stmt_update->execute([$destinataire_id, $mon_id]);
 }
 
+//////////////////////////////////////////////////
+// ✅ CONVERSATIONS
+//////////////////////////////////////////////////
+
 $stmt = $pdo->prepare("
-    SELECT s.id, s.nom, s.prenom, s.avatar,
-        (SELECT message FROM messages_prives
-        WHERE (expediteur_id = s.id AND destinataire_id = $mon_id )
-        OR (expediteur_id = $mon_id  AND destinataire_id = s.id)
-        ORDER BY date_envoi DESC LIMIT 1) as dernier_message,
-        (SELECT MAX(date_envoi) FROM messages_prives
-        WHERE (expediteur_id = s.id AND destinataire_id = $mon_id )
-        OR (expediteur_id = $mon_id  AND destinataire_id = s.id)) as date_dernier_msg
-    FROM anciens_stagiaires s
-    WHERE s.id != $mon_id 
-    ORDER BY date_dernier_msg DESC, s.nom ASC
+SELECT s.id, s.nom, s.prenom, s.avatar,
+(
+    SELECT message FROM messages_prives
+    WHERE (expediteur_id = s.id AND destinataire_id = ?)
+    OR (expediteur_id = ? AND destinataire_id = s.id)
+    ORDER BY date_envoi DESC LIMIT 1
+) as dernier_message
+FROM anciens_stagiaires s
+WHERE s.id != ?
 ");
-$stmt->execute();
+
+$stmt->execute([$mon_id, $mon_id, $mon_id]);
 $conversations = $stmt->fetchAll();
 
-$idsContacts = array_column($conversations, 'id');
-$enLigneIds = [];
+//////////////////////////////////////////////////
+// ✅ GROUPES
+//////////////////////////////////////////////////
 
-if (!empty($idsContacts)) {
-    $placeholders = implode(',', array_fill(0, count($idsContacts), '?'));
+$stmt = $pdo->prepare("
+SELECT g.* FROM groupes g
+JOIN groupe_membres gm ON g.id = gm.groupe_id
+WHERE gm.utilisateur_id = ?
+");
 
-    $stmt0nline = $pdo->prepare("
-        SELECT utilisateur_id FROM utilisateurs_connectes
-        WHERE utilisateur_id IN ($placeholders)
-        AND derniere_activite > DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-    ");
+$stmt->execute([$mon_id]);
+$groupes = $stmt->fetchAll();
 
-    $stmt0nline->execute(array_values($idsContacts));
-    $enLigneIds = $stmt0nline->fetchAll(PDO::FETCH_COLUMN);
-}
+//////////////////////////////////////////////////
+// ✅ MESSAGES PRIVÉS
+//////////////////////////////////////////////////
 
-
+$messages = [];
 $destinataire = null;
-$messages =[];
+
 if ($destinataire_id > 0) {
+
     $stmt = $pdo->prepare("SELECT prenom, nom FROM anciens_stagiaires WHERE id=?");
     $stmt->execute([$destinataire_id]);
     $destinataire = $stmt->fetch();
-    if ($destinataire) {
-        $stmt = $pdo->prepare("
-            SELECT m.* , s.prenom, s.nom 
-            FROM messages_prives m
-            JOIN anciens_stagiaires s ON m.expediteur_id = s.id 
-            WHERE (m.expediteur_id = ? AND m.destinataire_id = ?)
-            OR (m.expediteur_id = ? AND m.destinataire_id = ?)
-            ORDER BY m.date_envoi ASC
-        ");
-        $stmt->execute([$mon_id, $destinataire_id, $destinataire_id, $mon_id]);
-        $messages = $stmt->fetchAll();
-    }
+
+    $stmt = $pdo->prepare("
+        SELECT m.*, s.prenom 
+        FROM messages_prives m
+        JOIN anciens_stagiaires s ON m.expediteur_id = s.id
+        WHERE (m.expediteur_id = ? AND m.destinataire_id = ?)
+        OR (m.expediteur_id = ? AND m.destinataire_id = ?)
+        ORDER BY m.date_envoi ASC
+    ");
+
+    $stmt->execute([$mon_id, $destinataire_id, $destinataire_id, $mon_id]);
+    $messages = $stmt->fetchAll();
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <title>Messagerie Privée</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <?php include 'navbar.php'; ?>
-        <div class="whatsapp-container">
-        
-        <div class="sidebar">
-            <div class="sidebar-header">Stagiaires</div>
-            <div style="padding: 10px 15px; border-bottom: 1px solid #eef0ff;">
-                <input type="text" id="searchStagiaire" placeholder="Rechercher un stagiaire..."
-                style="width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-raidus: 20px; outline: none; font-size: 0.88rem;">
-            </div>
-            <div class="contact-list">
-                <?php if (empty($conversations)): ?>
-                    <p style="text-align: center; color: var(--color-muted); padding: 20px; font-size: 0.9rem;">
-                        Aucun stagiaire trouvé.
-                    </p>
-                <?php else: ?>
-                    <?php foreach ($conversations as $c): ?>
-                        <a href="messagerie.php?id=<?= $c['id'] ?>" class="contact-item <?= ($destinataire_id == $c['id']) ? 'active' : '' ?>" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; text-decoration: none; color: inherit; border-bottom: 1px solid #f3f4f6;">
-                        
-                        <div style="position: relative; width:40px; height: 40px; flex-shrink: 0;">
-                            <img src="<?= htmlspecialchars($c['avatar'] ?? 'default_avatar.png') ?>" alt="Avatar" class="contact-avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+<html>
+<head>
+    <title>Messagerie</title>
+</head>
 
-                            <span style="
-                                width: 10px; height: 10px;
-                                background: <?= in_array($c['id'], $enLigneIds) ? '#22c55e' : '#9ca3af' ?>;
-                                border-radius: 50%;
-                                position: absolute; 
-                                bottom: 1px; right: 1px; 
-                                border: 2px solid #fff; ">
-                            </span>
-                        </div>
-                            
-                            <div style="flex: 1; min-width: 0;">
-                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                                    <h3 style="margin: 0; font-size: 0.95rem; text-transform: capitalize;"><?= htmlspecialchars($c['prenom'] . ' ' . $c['nom']) ?></h3>
-                                </div>
-                                <p style="margin: 3px 0 0 0; font-size: 0.82rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    <?= !empty($c['dernier_message']) ? htmlspecialchars($c['dernier_message']) : '<i>Aucun message émis</i>' ?>
-                                </p>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-        </div>
+<body>
 
-        <div class="chat-area">
-            <?php if ($destinataire): ?>
-                <div class="chat-header" style="padding: 15px 20px; background: #fff; border-bottom: 1px solid #eef0ff; font-weight: bold; font-size: 1.1rem; color: var(--color-primary);">
-                    Discussion avec <?= htmlspecialchars($destinataire['prenom'] . ' ' . $destinataire['nom']) ?>
-                </div>
-                
-                <div class="chat-box" style="flex: 1; padding: 20px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 12px;">
-                    <?php if (empty($messages)): ?>
-                        <p style="text-align: center; color: #aaa; margin-top: 20px; font-style: italic;">Envoyez un message pour démarrer la discussion !</p>
-                    <?php else: ?>
-                        <?php foreach ($messages as $msg): ?>
-                            <div class="bubble <?= $msg['expediteur_id'] == $mon_id ? 'me' : 'other' ?>" style="position: relative; padding: 10px 15px 25px 15px; border-radius: 12px; max-width: 60%; width: fit-content; <?= $msg['expediteur_id'] == $mon_id ? 'align-self: flex-end; background: #e0f2fe; color: #0369a1;' : 'align-self: flex-start; background: #fff; border: 1px solid #e2e8f0; color: #334155;' ?>">
-                                <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['prenom']) ?> :</strong>
-                                <p style="margin: 5px 0 0 0; word-break: break-word;"><?= htmlspecialchars($msg['message']) ?></p>
-                                
-                                <span class="chat-time" style="position: absolute; bottom: 4px; right: 10px; font-size: 0.68rem; color: rgba(0, 0, 0, 0.4);">
-                                    <?php 
-                                        $date = new DateTime($msg['date_envoi']);
-                                        echo $date->format('H:i'); 
-                                    ?>
-                                </span>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
+<?php include 'navbar.php'; ?>
 
-                <form class="chat-form" method="POST" action="" style="padding: 15px 20px; background: #fff; border-top: 1px solid #eef0ff; display: flex; gap: 10px;">
-                    <input type="text" name="message" placeholder="Écrivez votre message privé..." required autocomplete="off" style="flex: 1; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 25px; outline: none;">
-                    <input type="submit" value="Envoyer" style="padding: 12px 25px; background: var(--color-accent, #0077b5); color: #fff; border: none; border-radius: 25px; cursor: pointer; font-weight: bold;">
-                </form>
-            <?php else: ?>
-                <div class="chat-blank" style="flex: 1; display: flex; align-items: center; justify-content: center; color: #94a3b8; background: #f8fafc; font-size: 0.95rem;">
-                     Sélectionnez un stagiaire à gauche pour démarrer une conversation privée.
-                </div>
-            <?php endif; ?>
-        </div>
+<h2>Messagerie</h2>
 
-    </div>
+<!-- ✅ BUTTON GROUP -->
+<button onclick="document.getElementById('popup').style.display='block'">
+    ➕ Nouveau groupe
+</button>
 
-    <script>
-        var chatBox = document.querySelector('.chat-box');
-        if (chatBox) {
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
-    <script>
-        document.getElementById('searchStagiaire').addEventListener('input', function() {
-            let saisie = this.value.toLowerCase();
-            let contacts = document.querySelectorAll('.contact-list .contact-item');
-            contacts.forEach(function(contact){
-                let nomStagiaire = contact.textContent.toLowerCase();
-                if (nomStagiaire.includes(saisie)){
-                    contact.style.display = 'flex';
-                }
-                else{
-                    contact.style.display ='none';
-                }
-            });
-        });
-    </script>
-    </body>
+<!-- ✅ POPUP -->
+<div id="popup" style="display:none; background:white; padding:20px; border:1px solid #ccc;">
+    <button onclick="document.getElementById('popup').style.display='none'">❌</button>
+
+    <form method="POST">
+        <input type="text" name="nom_groupe" placeholder="Nom du groupe" required>
+
+        <h4>Membres</h4>
+
+        <?php
+        $stmt = $pdo->query("SELECT id, prenom FROM anciens_stagiaires");
+        while ($u = $stmt->fetch()):
+        ?>
+            <label>
+                <input type="checkbox" name="membres[]" value="<?= $u['id'] ?>">
+                <?= htmlspecialchars($u['prenom']) ?>
+            </label><br>
+        <?php endwhile; ?>
+
+        <button name="creer_groupe">Créer</button>
+    </form>
+</div>
+
+<!-- ✅ SIDEBAR -->
+<h3>Contacts</h3>
+
+<?php foreach ($conversations as $c): ?>
+    <a href="messagerie.php?id=<?= $c['id'] ?>">
+        <?= htmlspecialchars($c['prenom']) ?>
+    </a><br>
+<?php endforeach; ?>
+
+<!-- ✅ GROUPES -->
+<h3>Groupes</h3>
+
+<?php foreach ($groupes as $g): ?>
+    <a href="groupe.php?id=<?= $g['id'] ?>">
+        <?= htmlspecialchars($g['nom']) ?>
+    </a><br>
+<?php endforeach; ?>
+
+<!-- ✅ CHAT -->
+<?php if ($destinataire): ?>
+
+<h3>Discussion avec <?= htmlspecialchars($destinataire['prenom']) ?></h3>
+
+<?php foreach ($messages as $msg): ?>
+    <p>
+        <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : $msg['prenom'] ?> :</strong>
+        <?= htmlspecialchars($msg['message']) ?>
+    </p>
+<?php endforeach; ?>
+
+<form method="POST">
+    <input type="text" name="message" required>
+    <button>Envoyer</button>
+</form>
+
+<?php endif; ?>
+
+</body>
 </html>

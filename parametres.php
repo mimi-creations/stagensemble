@@ -26,12 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $linkedin = trim($_POST['linkedin'] ?? '');
     $nom_avatar=$user['avatar'];
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
-        $dossier_cible ="";
+        $dossier_cible ="uploads/";
         $extension =strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
         $extension_autorisees= ['jpg','jpeg', 'png', 'gif'];
         if (in_array($extension, $extension_autorisees)) {
-            $nom_avatar = "avatar_" . $id_utilisateur . "." . $extension;
-            move_uploaded_file($_FILES['avatar']['tmp_name'], $dossier_cible . $nom_avatar);
+            $nom_avatar = "uploads/avatar_" . $id_utilisateur . "." . $extension;
+            
+            move_uploaded_file($_FILES['avatar']['tmp_name'], $nom_avatar);
         }else{
             $erreur = "Format d'image non valide (JPG, PNG, GIF uniquement).";
         }

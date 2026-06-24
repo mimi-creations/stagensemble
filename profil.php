@@ -23,6 +23,12 @@ if(!$stagiaire) {
     echo "Stagiaire introuvable.";
     exit;
 }
+
+    // ✅ récupérer les ressources de ce stagiaire
+$stmt = $pdo->prepare("SELECT * FROM ressources WHERE utilisateur_id = ? ORDER BY id DESC");
+$stmt->execute([$id_profil]);
+$ressources = $stmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -96,7 +102,50 @@ if(!$stagiaire) {
                      Envoyer un message privé
                 </a>
             </div>
-
+            
+            <div style="margin-top: 40px;">
+                <h3 style="font-size: 1.2rem; color: var(--color-dark); margin-bottom: 15px;">
+                    📚 Ressources partagées
+                </h3>
+                <?php if (!empty($ressources)): ?>
+                    <?php foreach ($ressources as $res): ?>
+                        <div style="
+                            background: white;
+                            padding: 15px;
+                            border-radius: 10px;
+                            margin-bottom: 15px;
+                            border: 1px solid #eee;
+                            box-shadow: var(--shadow-card);
+                        ">
+                            <h4 style="margin-bottom: 5px; color: var(--color-accent);">
+                                <?= htmlspecialchars($res['titre']) ?>
+                            </h4>
+            
+                            <p style="font-size: 0.9rem; color: #555;">
+                                <?= htmlspecialchars($res['sujet']) ?>
+                            </p>
+            
+                            <?php if (!empty($res['probleme_rencontre'])): ?>
+                                <p style="font-size: 0.85rem; color: #777;">
+                                    <strong>Problème :</strong> <?= htmlspecialchars($res['probleme_rencontre']) ?>
+                                </p>
+                            <?php endif; ?>
+            
+                            <?php if (!empty($res['solution_utilisee'])): ?>
+                                <p style="font-size: 0.85rem; color: #777;">
+                                    <strong>Solution :</strong> <?= htmlspecialchars($res['solution_utilisee']) ?>
+                                </p>
+                            <?php endif; ?>
+            
+                            <small style="color: #aaa;">
+                                📅 <?= $res['date_publication'] ?>
+                            </small>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p style="color:#777;">Ce stagiaire n’a pas encore partagé de ressources.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </body>
 </html>

@@ -59,6 +59,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $user = $stmt->fetch();
 }
 
+    $stmt = $pdo->prepare("SELECT * FROM ressources WHERE utilisateur_id = ?");
+    $stmt->execute([$_SESSION['utilisateur_id']]);
+    $mesRessources = $stmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -116,6 +120,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
                 <input type="submit" class="btn-primary" value="Enregistrer les modifications">
             </div>
         </form>
+        <h3>📚 Mes ressources</h3>
+        <?php if (count($mesRessources) > 0): ?>
+            <?php foreach ($mesRessources as $res): ?>
+                <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+                    <h4><?= htmlspecialchars($res['titre']) ?></h4>
+                    <p><?= htmlspecialchars($res['sujet']) ?></p>
+                    <small>Publié le : <?= $res['date_publication'] ?></small>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>Vous n'avez encore partagé aucune ressource.</p>
+        <?php endif; ?>
     </div>
 </body>
 </html>

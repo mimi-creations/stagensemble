@@ -37,8 +37,7 @@ if (!empty($recherche)) {
         <div class="filtre-container" style="margin-bottom: 20px; background: #f3f4f6; padding: 15px; border-radius: 8px; display: flex; align-items:center; gap: 15px;">
             <form action="annuaire.php" method="GET" style="display: flex; gap: 10px; margin-bottom: 25px; max-width: 500px;">
                 <input type="text" name="recherche" value="<?= htmlspecialchars($recherche) ?>"
-                    placeholder="Rechercher une école ou un secteur (ex: EMSI, IT...)"
-                    style="flex: 1; padding: 10px 15px; border:1px solid #ccc; border-raidus: 8px; font-size: 0.95rem;">
+                    placeholder="Rechercher une école ou un secteur (ex: EMSI, IT...)">
                 <input type="submit" value="Rechercher" class="btn-primary" style="padding: 10px 20px; cursor: pointer;">
                 <?php if (!empty($recherche)): ?>
                     <a href="annuaire.php" style="display: inline-flex; align-items: center; text-decoration: none; color: #666; font-size: 0.9rem; padding:0 10px;"> Réinitialiser</a>

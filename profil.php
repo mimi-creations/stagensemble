@@ -75,17 +75,17 @@ $ressources = $stmt->fetchAll();
                     <p style="font-weight: 600;"><a href="mailto:<?= htmlspecialchars($stagiaire['email']) ?>" style="color: var(--color-accent2); text-decoration: none;"><?= htmlspecialchars($stagiaire['email']) ?></a></p>
                 </div>
                 <?php if (!empty($stagiaire['linkedin'])): ?>
-                     <div style="grid-column: span 2; background: #e8f2ff; padding: 10px; border-radius: 8px; border: 1px solid #d0e3ff;">
-                      <p style="font-size: 0.8rem; color: #006699; margin-bottom: 2px;">Réseau Professionnel</p>
-                      <p style="font-weight: 600;">
-                    <a href="<?= strpos($stagiaire['linkedin'], 'http') === 0 ? htmlspecialchars($stagiaire['linkedin']) : 'https://' . htmlspecialchars($stagiaire['linkedin']) ?>" 
-                       target="_blank" 
-                       style="color: #0077b5; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-                 Voir le profil LinkedIn
-            </a>
-        </p>
-    </div>
-<?php endif; ?>
+                    <div style="grid-column: span 2; background: #e8f2ff; padding: 10px; border-radius: 8px; border: 1px solid #d0e3ff;">
+                        <p style="font-size: 0.8rem; color: #006699; margin-bottom: 2px;">Réseau Professionnel</p>
+                        <p style="font-weight: 600;">
+                            <a href="<?= strpos($stagiaire['linkedin'], 'http') === 0 ? htmlspecialchars($stagiaire['linkedin']) : 'https://' . htmlspecialchars($stagiaire['linkedin']) ?>" 
+                                target="_blank" 
+                                style="color: #0077b5; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                                Voir le profil LinkedIn
+                            </a>
+                        </p>
+                    </div>
+                <?php endif; ?>
 
                     </div>
                 <?php endif; ?>

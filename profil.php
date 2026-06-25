@@ -86,10 +86,6 @@ $ressources = $stmt->fetchAll();
                         </p>
                     </div>
                 <?php endif; ?>
-
-                    </div>
-                <?php endif; ?>
-            </div>
             <div style="margin-bottom: 25px; border-left: 4px solid var(--color-accent); padding-left: 15px;">
                 <h3 style="font-size: 1.1rem; margin-bottom: 6px; color: var(--color-dark);"> À propos / Biographie</h3>
                 <p style="font-size: 0.95rem; color: #4a4a4a; line-height: 1.5; font-style: <?= empty($stagiaire['biographie']) ? 'italic' : 'normal' ?>;">

@@ -35,7 +35,18 @@ $messages = array_reverse($query->fetchAll());
         <div class="chat-box">
             <?php foreach ($messages as $msg): ?>
             <div class="message">
-                <small>[<?= date('H:i', strtotime($msg['date_envoi'])) ?>]</small>
+                <small>[<?php
+                    $date = new DateTime($msg['date-envoi']);
+                    $today = new DateTime('today');
+                    $yesterday = new DateTime('yesterday');
+                    if ($date ≥ $today) {
+                        echo "Aujourd'hui à " . $date->format('H:i');
+                    } elseif ($date ≥ $yesterday) {
+                        echo "Hier à " . $date->format('H:i');
+                    } else {
+                        echo $date->format('d/m/Y à H:i');
+                    }
+                ?>]</small>
                 <strong><?= htmlspecialchars($msg['pseudo']) ?> :</strong>
                 <span><?= htmlspecialchars($msg['message']) ?></span>
             </div>

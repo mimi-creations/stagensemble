@@ -63,42 +63,33 @@ $messages = $stmt->fetchAll();
             </div>
             <div class="chat-box">
                 <?php foreach ($messages as $msg): ?>
-                    <div class="bubble <?= $msg['expediteur_id'] == $mon_id ? 'me' : 'other' ?>">
-                        <strong>
-                            <?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?> :
-                        </strong>
-                        <p style="margin: 5px 0 0 0;">
-                            <?= htmlspecialchars($msg['message']) ?>
-                        </p>
-                        <?php
-                        $rawDate = $msg['date_envoi'] ?? null;
+                    <?php
+                    $rawDate = $msg['date_envoi'] ?? null;
                 
-                        if ($rawDate) {
-                            $date = new DateTime($rawDate);
+                    if ($rawDate) {
+                        $date = new DateTime($rawDate);
+                        $heure = $date->format('H:i');
+                    } else {
+                        $heure = "";
+                    }
+                    ?>
                 
-                            $today = (new DateTime())->setTime(0, 0, 0);
-                            $yesterday = (new DateTime('-1 day'))->setTime(0, 0, 0);
-                            $compare = (clone $date)->setTime(0, 0, 0);
+                    <div class="message <?= $msg['expediteur_id'] == $mon_id ? 'sent' : 'received' ?>">
                 
-                            if ($compare == $today) {
-                                $texteDate = "Aujourd'hui à " . $date->format('H:i');
-                            } elseif ($compare == $yesterday) {
-                                $texteDate = "Hier à " . $date->format('H:i');
-                            } else {
-                                $texteDate = $date->format('d/m/Y à H:i');
-                            }
+                        <div class="bubble">
                 
-                        } else {
-                            $texteDate = "Date inconnue";
-                        }
-                        ?>
-                        <!-- ✅ affichage visible -->
-                        <div style="
-                            font-size: 12px;
-                            color: #888;
-                            margin-top: 5px;
-                        ">
-                            <?= $texteDate ?>
+                            <div class="name">
+                                <?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?>
+                            </div>
+                
+                            <div class="text">
+                                <?= htmlspecialchars($msg['message']) ?>
+                            </div>
+                
+                            <div class="time">
+                                <?= $heure ?>
+                            </div>
+                
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -366,9 +366,37 @@ if ($destinataire_id > 0) {
                                     : 'align-self:flex-start; background:#fff; border:1px solid #e2e8f0; color:#334155;' ?>">
                                 <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['prenom']) ?> :</strong>
                                 <p style="margin:5px 0 0; word-break:break-word;"><?= htmlspecialchars($msg['message']) ?></p>
-                                <span style="position:absolute; bottom:4px; right:10px; font-size:0.68rem; color:rgba(0,0,0,0.4);">
-                                    <?= (new DateTime($msg['date_envoi']))->format('H:i') ?>
-                                </span>
+                                <?php
+                                    $rawDate = $msg['date_envoi'] ?? null;
+                                    
+                                    if ($rawDate) {
+                                        $date = new DateTime($rawDate);
+                                    
+                                        $today = (new DateTime())->setTime(0, 0);
+                                        $yesterday = (new DateTime('-1 day'))->setTime(0, 0);
+                                        $compare = (clone $date)->setTime(0, 0);
+                                    
+                                        if ($compare == $today) {
+                                            $texteDate = "Aujourd'hui à " . $date->format('H:i');
+                                        } elseif ($compare == $yesterday) {
+                                            $texteDate = "Hier à " . $date->format('H:i');
+                                        } else {
+                                            $texteDate = $date->format('d/m/Y à H:i');
+                                        }
+                                    } else {
+                                        $texteDate = "";
+                                    }
+                                    ?>
+                                    
+                                    <span style="
+                                        position:absolute;
+                                        bottom:4px;
+                                        right:10px;
+                                        font-size:0.7rem;
+                                        color:rgba(0,0,0,0.5);
+                                    ">
+                                        <?= $texteDate ?>
+                                    </span>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>

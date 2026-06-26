@@ -67,17 +67,33 @@ $messages = $stmt->fetchAll();
                         <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?> :</strong>
                         <p style="margin: 5px 0 0 0;"><?= htmlspecialchars($msg['message']) ?></p>
                         <small>[<?php
-                            $date = new DateTime($msg['date-envoi']);
-                            $today = new DateTime('today');
-                            $yesterday = new DateTime('yesterday');
-                            if ($date ≥ $today) {
-                                echo "Aujourd'hui à " . $date->format('H:i');
-                            } elseif ($date ≥ $yesterday) {
-                                echo "Hier à " . $date->format('H:i');
-                            } else {
-                                echo $date->format('d/m/Y à H:i');
-                            }
-                        ?>]</small>
+    $rawDate = $msg['date_envoi'] ?? null;
+
+    if ($rawDate) {
+
+        $date = new DateTime($rawDate);
+
+        $today = new DateTime();
+        $today->setTime(0, 0, 0);
+
+        $yesterday = new DateTime();
+        $yesterday->modify('-1 day')->setTime(0, 0, 0);
+
+        $dateCompare = clone $date;
+        $dateCompare->setTime(0, 0, 0);
+
+        if ($dateCompare == $today) {
+            echo "Aujourd'hui à " . $date->format('H:i');
+        } elseif ($dateCompare == $yesterday) {
+            echo "Hier à " . $date->format('H:i');
+        } else {
+            echo $date->format('d/m/Y à H:i');
+        }
+
+    } else {
+        echo "Date inconnue";
+    }
+?>]</small>
                     </div>
                 <?php endforeach; ?>
             </div>

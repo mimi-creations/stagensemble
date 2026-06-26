@@ -225,7 +225,8 @@ if ($destinataire_id > 0) {
 
         /* ── Groupe tag ── */
         .groupe-badge {
-            font-size: 0.7rem;
+            font-size:11px;
+            opacity:0.7;
             background: #e0f2fe;
             color: #0369a1;
             padding: 2px 7px;

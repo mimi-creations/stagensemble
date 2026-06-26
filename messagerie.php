@@ -274,80 +274,32 @@ if ($destinataire_id > 0) {
                             Aucun stagiaire trouvé.
                         </p>
                     <?php else: ?>
-                       <?php
-                            $lastDate = null; // ✅ pour éviter répéter "Aujourd’hui"
-                            ?>
-                            
-                            <?php foreach ($messages as $msg): ?>
-                            
-                                <?php
-                                $date = new DateTime($msg['date_envoi']);
-                            
-                                // date sans heure
-                                $dateKey = $date->format('Y-m-d');
-                            
-                                $today = (new DateTime())->format('Y-m-d');
-                                $yesterday = (new DateTime('-1 day'))->format('Y-m-d');
-                            
-                                // ✅ afficher séparateur seulement si nouvelle date
-                                if ($dateKey !== $lastDate):
-                            
-                                    if ($dateKey === $today) {
-                                        $label = "Aujourd’hui";
-                                    } elseif ($dateKey === $yesterday) {
-                                        $label = "Hier";
-                                    } else {
-                                        $label = $date->format('d/m/Y');
-                                    }
-                                ?>
-                            
-                                    <div style="
-                                        text-align:center;
-                                        margin:15px 0;
-                                        color:#666;
-                                        font-size:13px;
-                                    ">
-                                        ─── <?= $label ?> ───
-                                    </div>
-                            
-                                <?php
-                                $lastDate = $dateKey;
-                                endif;
-                                ?>
-                            
-                                <div style="
-                                    position:relative;
-                                    padding:10px 15px 25px;
-                                    border-radius:12px;
-                                    max-width:60%;
-                                    width:fit-content;
-                                    <?= $msg['expediteur_id'] == $mon_id
-                                        ? 'align-self:flex-end; background:#d9fdd3;'
-                                        : 'align-self:flex-start; background:#fff; border:1px solid #e2e8f0;' ?>
-                                ">
-                            
-                                    <strong>
-                                        <?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['prenom']) ?> :
-                                    </strong>
-                            
-                                    <p style="margin:5px 0 0; word-break:break-word;">
-                                        <?= htmlspecialchars($msg['message']) ?>
-                                    </p>
-                            
-                                    <!-- ✅ heure seulement -->
-                                    <span style="
-                                        position:absolute;
-                                        bottom:4px;
-                                        right:10px;
-                                        font-size:11px;
-                                        color:rgba(0,0,0,0.5);
-                                    ">
-                                        <?= $date->format('H:i') ?>
+                        <?php foreach ($conversations as $c): ?>
+                            <a href="messagerie.php?id=<?= $c['id'] ?>"
+                                class="contact-item <?= ($destinataire_id == $c['id']) ? 'active' : '' ?>"
+                                style="display:flex; align-items:center; gap:10px; padding:10px 15px; text-decoration:none; color:inherit; border-bottom:1px solid #f3f4f6;">
+
+                                <div style="position:relative; width:40px; height:40px; flex-shrink:0;">
+                                    <img src="<?= htmlspecialchars($c['avatar'] ?? 'default_avatar.png') ?>"
+                                        alt="Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                                    <span style="width:10px; height:10px;
+                                        background:<?= in_array($c['id'], $enLigneIds) ? '#22c55e' : '#9ca3af' ?>;
+                                        border-radius:50%; position:absolute; bottom:1px; right:1px; border:2px solid #fff;">
                                     </span>
-                            
                                 </div>
-                            
-                            <?php endforeach; ?>
+
+                                <div style="flex:1; min-width:0;">
+                                    <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                                        <h3 style="margin:0; font-size:0.95rem; text-transform:capitalize;">
+                                            <?= htmlspecialchars($c['prenom'] . ' ' . $c['nom']) ?>
+                                        </h3>
+                                    </div>
+                                    <p style="margin:3px 0 0; font-size:0.82rem; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                        <?= !empty($c['dernier_message']) ? htmlspecialchars($c['dernier_message']) : '<i>Aucun message</i>' ?>
+                                    </p>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
             </div>

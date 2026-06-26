@@ -39,9 +39,9 @@ $messages = array_reverse($query->fetchAll());
                     $date = new DateTime($msg['date-envoi']);
                     $today = new DateTime('today');
                     $yesterday = new DateTime('yesterday');
-                    if ($date ≥ $today) {
+                    if ($date >= $today) {
                         echo "Aujourd'hui à " . $date->format('H:i');
-                    } elseif ($date ≥ $yesterday) {
+                    } elseif ($date >= $yesterday) {
                         echo "Hier à " . $date->format('H:i');
                     } else {
                         echo $date->format('d/m/Y à H:i');

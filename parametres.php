@@ -26,25 +26,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $linkedin = trim($_POST['linkedin'] ?? '');
     $nom_avatar=$user['avatar'];
     
-    $dossier_cible ="uploads/";
+if (isset($_FILES['avatar']) && $-FILES['avatar'] ['error'] == 0) {
+    $extension = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+    $extensions_autorisees = ['jpg, 'jpeg', 'png', 'gif', 'webp'];
 
-    if (!is_dir("uploads")) {
-        mkdir("uploads", 0777, true);
-        chmod("uploads", 0777);
+    if (in_array($extension, $extensions_autorisees)) {
+        $mime_types = [
+            'jpg'  => 'images/jpeg',
+            'jpeg' => 'images/jpeg',
+            'png'  => 'images/png',
+            'gif'  => 'images/gif',
+            'webp' => 'images/webp',
+        ];
+        $mime        = $mime_types[extension];
+        $contenu     = file_get_contents($_FILES['avatar']['tmp_name']);
+        $avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($contenu);
+
+        $stmt = $pdo->prepare("UPDATE anciens_stagiaires SET avatar = ? WHERE id = ?");
+        $stmt ->execute([$avatar_base64, $id_utilisateur]);
+    } else {
+        $erreur = "Format image non valide (JPG, PNG, GIF uniquement).";
     }
-    if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
-        $extension =strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
-        $extension_autorisees= ['jpg','jpeg', 'png', 'gif'];
-        
-        if (in_array($extension, $extension_autorisees)) {
-            
-            $nom_avatar = $dossier_cible . "avatar_" . $id_utilisateur . "." . $extension;
-            
-            move_uploaded_file($_FILES['avatar']['tmp_name'], $nom_avatar);
-        }else{
-            $erreur = "Format d'image non valide (JPG, PNG, GIF uniquement).";
-        }
-    }
+}
                 
     if (empty($erreur)) {
         $stmt = $pdo->prepare("UPDATE anciens_stagiaires SET biographie = ?, parcours_scolaire = ?, telephone =? , ecole = ?, annee_stage = ?, duree_stage = ?, secteur = ?, linkedin = ?, avatar = ? WHERE id = ?");

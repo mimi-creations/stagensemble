@@ -38,7 +38,7 @@ if (isset($_FILES['avatar']) && $_FILES['avatar'] ['error'] == 0) {
             'gif'  => 'images/gif',
             'webp' => 'images/webp',
         ];
-        $mime        = $mime_types[extension];
+        $mime        = $mime_types[$extension];
         $contenu     = file_get_contents($_FILES['avatar']['tmp_name']);
         $avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($contenu);
 

@@ -64,38 +64,45 @@ $messages = $stmt->fetchAll();
             <div class="chat-box">
                 <?php foreach ($messages as $msg): ?>
                     <div class="bubble <?= $msg['expediteur_id'] == $mon_id ? 'me' : 'other' ?>">
-                        <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?> :</strong>
-                        <p style="margin: 5px 0 0 0;"><?= htmlspecialchars($msg['message']) ?></p>
-                        <small>[<?php
-    $rawDate = $msg['date_envoi'] ?? null;
-
-    if ($rawDate) {
-
-        $date = new DateTime($rawDate);
-
-        $today = new DateTime();
-        $today->setTime(0, 0, 0);
-
-        $yesterday = new DateTime();
-        $yesterday->modify('-1 day')->setTime(0, 0, 0);
-
-        $dateCompare = clone $date;
-        $dateCompare->setTime(0, 0, 0);
-
-        if ($dateCompare == $today) {
-            echo "Aujourd'hui à " . $date->format('H:i');
-        } elseif ($dateCompare == $yesterday) {
-            echo "Hier à " . $date->format('H:i');
-        } else {
-            echo $date->format('d/m/Y à H:i');
-        }
-
-    } else {
-        echo "Date inconnue";
-    }
-?>]</small>
+                        <strong>
+                            <?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?> :
+                        </strong>
+                        <p style="margin: 5px 0 0 0;">
+                            <?= htmlspecialchars($msg['message']) ?>
+                        </p>
+                        <?php
+                        $rawDate = $msg['date_envoi'] ?? null;
+                
+                        if ($rawDate) {
+                            $date = new DateTime($rawDate);
+                
+                            $today = (new DateTime())->setTime(0, 0, 0);
+                            $yesterday = (new DateTime('-1 day'))->setTime(0, 0, 0);
+                            $compare = (clone $date)->setTime(0, 0, 0);
+                
+                            if ($compare == $today) {
+                                $texteDate = "Aujourd'hui à " . $date->format('H:i');
+                            } elseif ($compare == $yesterday) {
+                                $texteDate = "Hier à " . $date->format('H:i');
+                            } else {
+                                $texteDate = $date->format('d/m/Y à H:i');
+                            }
+                
+                        } else {
+                            $texteDate = "Date inconnue";
+                        }
+                        ?>
+                        <!-- ✅ affichage visible -->
+                        <div style="
+                            font-size: 12px;
+                            color: #888;
+                            margin-top: 5px;
+                        ">
+                            <?= $texteDate ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
+
             </div>
             <form class="chat-form" method="POST" action="">
                 <input type="text" name="message" placeholder="Ecrivez votre message privé..." required autocomplete="off">

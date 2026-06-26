@@ -36,7 +36,7 @@ $messages = array_reverse($query->fetchAll());
             <?php foreach ($messages as $msg): ?>
             <div class="message">
                 <small>[<?php
-                    $date = new DateTime($msg['date-envoi']);
+                    $date = new DateTime($msg['date_envoi']);
                     $today = new DateTime('today');
                     $yesterday = new DateTime('yesterday');
                     if ($date >= $today) {

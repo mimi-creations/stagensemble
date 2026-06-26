@@ -66,6 +66,18 @@ $messages = $stmt->fetchAll();
                     <div class="bubble <?= $msg['expediteur_id'] == $mon_id ? 'me' : 'other' ?>">
                         <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['nom_expediteur']) ?> :</strong>
                         <p style="margin: 5px 0 0 0;"><?= htmlspecialchars($msg['message']) ?></p>
+                        <small>[<?php
+                            $date = new DateTime($msg['date-envoi']);
+                            $today = new DateTime('today');
+                            $yesterday = new DateTime('yesterday');
+                            if ($date ≥ $today) {
+                                echo "Aujourd'hui à " . $date->format('H:i');
+                            } elseif ($date ≥ $yesterday) {
+                                echo "Hier à " . $date->format('H:i');
+                            } else {
+                                echo $date->format('d/m/Y à H:i');
+                            }
+                        ?>]</small>
                     </div>
                 <?php endforeach; ?>
             </div>

@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $linkedin = trim($_POST['linkedin'] ?? '');
     $nom_avatar=$user['avatar'];
     
-if (isset($_FILES['avatar']) && $-FILES['avatar'] ['error'] == 0) {
+if (isset($_FILES['avatar']) && $_FILES['avatar'] ['error'] == 0) {
     $extension = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
     $extensions_autorisees = ['jpg, 'jpeg', 'png', 'gif', 'webp'];
 

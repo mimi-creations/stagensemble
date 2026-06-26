@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     
 if (isset($_FILES['avatar']) && $_FILES['avatar'] ['error'] == 0) {
     $extension = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
-    $extensions_autorisees = ['jpg, 'jpeg', 'png', 'gif', 'webp'];
+    $extensions_autorisees = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
     if (in_array($extension, $extensions_autorisees)) {
         $mime_types = [

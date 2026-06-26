@@ -43,7 +43,7 @@ if (isset($_FILES['avatar']) && $_FILES['avatar'] ['error'] == 0) {
         $avatar_base64 = 'data:' . $mime . ';base64,' . base64_encode($contenu);
 
         $stmt = $pdo->prepare("UPDATE anciens_stagiaires SET avatar = ? WHERE id = ?");
-        $stmt ->execute([$avatar_base64, $id_utilisateur]);
+        $stmt->execute([$avatar_base64, $id_utilisateur]);
     } else {
         $erreur = "Format image non valide (JPG, PNG, GIF uniquement).";
     }

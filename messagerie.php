@@ -360,44 +360,58 @@ if ($destinataire_id > 0) {
                             Envoyez un message pour démarrer la discussion !
                         </p>
                     <?php else: ?>
+                        <?php
+                            $dernierJourAffiche = null;
+                            $today = (new DateTime())->setTime(0, 0);
+                            $yesterday = (new DateTime('-1 day'))->setTime(0, 0);
+                        ?>
                         <?php foreach ($messages as $msg): ?>
+                            <?php
+                                $rawDate = $msg['date_envoi'] ?? null;
+                                $heure = "";
+                                $jourCourant = null;
+
+                                if ($rawDate) {
+                                    $date = new DateTime($rawDate);
+                                    $heure = $date->format('H:i');
+                                    $jourCourant = $date->format('Y-m-d');
+
+                                    $compare = (clone $date)->setTime(0, 0);
+                                    if ($compare == $today) {
+                                        $texteSeparateur = "Aujourd'hui";
+                                    } elseif ($compare == $yesterday) {
+                                        $texteSeparateur = "Hier";
+                                    } else {
+                                        $texteSeparateur = $date->format('d/m/Y');
+                                    }
+                                }
+                            ?>
+
+                            <?php if ($jourCourant !== null && $jourCourant !== $dernierJourAffiche): ?>
+                                <div style="text-align:center; margin:10px 0 5px;">
+                                    <span style="background:#e2e8f0; color:#475569; font-size:0.75rem; font-weight:600; padding:4px 12px; border-radius:12px;">
+                                        <?= htmlspecialchars($texteSeparateur) ?>
+                                    </span>
+                                </div>
+                                <?php $dernierJourAffiche = $jourCourant; ?>
+                            <?php endif; ?>
+
                             <div style="position:relative; padding:10px 15px 25px; border-radius:12px; max-width:60%; width:fit-content;
                                 <?= $msg['expediteur_id'] == $mon_id
                                     ? 'align-self:flex-end; background:#e0f2fe; color:#0369a1;'
                                     : 'align-self:flex-start; background:#fff; border:1px solid #e2e8f0; color:#334155;' ?>">
                                 <strong><?= $msg['expediteur_id'] == $mon_id ? 'Moi' : htmlspecialchars($msg['prenom']) ?> :</strong>
                                 <p style="margin:5px 0 0; word-break:break-word;"><?= htmlspecialchars($msg['message']) ?></p>
-                                <?php
-                                    $rawDate = $msg['date_envoi'] ?? null;
-                                    
-                                    if ($rawDate) {
-                                        $date = new DateTime($rawDate);
-                                    
-                                        $today = (new DateTime())->setTime(0, 0);
-                                        $yesterday = (new DateTime('-1 day'))->setTime(0, 0);
-                                        $compare = (clone $date)->setTime(0, 0);
-                                    
-                                        if ($compare == $today) {
-                                            $texteDate = "Aujourd'hui à " . $date->format('H:i');
-                                        } elseif ($compare == $yesterday) {
-                                            $texteDate = "Hier à " . $date->format('H:i');
-                                        } else {
-                                            $texteDate = $date->format('d/m/Y à H:i');
-                                        }
-                                    } else {
-                                        $texteDate = "";
-                                    }
-                                    ?>
-                                    
-                                    <span style="
-                                        position:absolute;
-                                        bottom:4px;
-                                        right:10px;
-                                        font-size:0.7rem;
-                                        color:rgba(0,0,0,0.5);
-                                    ">
-                                        <?= $texteDate ?>
-                                    </span>
+
+                                <span style="
+                                    position:absolute;
+                                    bottom:4px;
+                                    right:10px;
+                                    font-size:0.7rem;
+                                    color:rgba(0,0,0,0.5);
+                                ">
+                                    <?= htmlspecialchars($heure) ?>
+                                </span>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>

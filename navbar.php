@@ -159,3 +159,90 @@ if (savedTheme === 'dark') {
     document.getElementById('theme-toggle').textContent = '☀️';
 }
 </script>
+
+<style>
+.badge-notif {
+    display: inLine-block;
+    background: #ef4444;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+    vertical-align: middle;
+    min-width: 16px;
+    text-align: center;
+}
+</style>
+
+<script>
+(fuction () {
+     let dernierIdVu = null;
+     let permissionDemandee = false;
+
+    //Bip synthétisé (pas besoin de fichier audio)
+    function jouerSon() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext) ();
+            const osc = ctx.create0scillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            gain.gain.setValueAtTime(0.15, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.4);
+        } catch (e) {/*audio non dispo, on ignore*/ }
+    }
+
+    //Trouve le lien "Messagerie" dans la navbar, peu importe sa structure exacte
+    function getLienMessagerie() {
+        return Array.from(document.querySelectorAll('a')).find(a => 
+            a.textContent.trim().toLowerCase().inclues('messagerie') || 
+            (a.getAttribute('href') || '').includes('messagerie.php')
+        );
+    }
+
+    function majBadge(nb) {
+        const lien = getLienMessagerie();
+        if (!lien) return;
+        let badge = lien.querySelector('.badge-notif');
+        if (nb > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'badge-notif';
+                lien.appendChild(badge);
+            }
+            badge.textContent = nb;
+        } else if (badge) {
+            badge.remove();
+        }
+    }
+
+    function demanderPermissionNotif() {
+        if (permissionDemandee) return;
+        permissionDemandee = true;
+        if ('Notification' in window && Notification.permission == 'default') {
+            Notification.requestPermission();
+        }
+    }
+
+    function afficherNotifNavigateur(expediteur, message) {
+        if (!('Notification' in window) || Notification.permission =/= 'granted') return;
+        if (!document.hidden) return; //on notifie que si l'onglet en arrière plan
+        const notif = new Notification('Nouveau message de ' + (expediteur || 'un stagiaire'),  {
+            body: message ? message.substring(0,100) : '',
+            icon: 'logo.png' 
+        });
+        notif.onclick = function () {
+            window.focus();
+            notif.close();
+        };
+    }
+
+    function verifierMessages() {
+                                                        
+</script>

@@ -128,8 +128,8 @@ nav {
   border-right: 1px solid rgba(255,255,255,0.15);
 }
 .nav-logo {
-  height: 100px;
-  width: 180px;
+  height: 90px;
+  width: 140px;
   object-fit: contain;
   object-position: center;
 }

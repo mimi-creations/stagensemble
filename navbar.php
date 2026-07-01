@@ -244,5 +244,28 @@ if (savedTheme === 'dark') {
     }
 
     function verifierMessages() {
-                                                        
+        fetch('check_messages.php')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data || data.error) return;
+
+                majBadge(data.nb_non_lus);
+
+                if (data.dernier_id && data.dernier_id !== dernierIdVu) {
+                    // Un nouveau message est arrivé (pas juste le premier chargement)
+                    if (dernierIdVu !== null) {
+                        jouerSon();
+                        afficherNotifNavigateur(data.dernier_expediteur, data.dernier_message);
+                    }
+                    dernierIdVu = data.dernier_id;
+                }
+            })
+            .catch(() => {});
+    }
+
+    document.addEventListener('click', demanderPermissionNotif, { once: true });
+
+    verifierMessages();
+    setInterval(verifierMessages, 10000); // toutes les 10 secondes
+})();                                             
 </script>
